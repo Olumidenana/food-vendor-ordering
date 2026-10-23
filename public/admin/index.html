@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vendor Dashboard • SmartBiz Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-rose-500 selection:text-white pb-16">
+
+  <!-- Admin Header -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-xl sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center font-black text-white text-lg">
+          SB
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-white">SmartBiz Owner Portal</h1>
+          <p class="text-[11px] text-slate-400">Live Orders & Appointments Feed</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button onclick="fetchRecords()" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 border border-slate-700 flex items-center gap-1.5 transition">
+          🔄 Refresh
+        </button>
+        <a href="/" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 border border-slate-700 transition">
+          ← Back to Hub
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 pt-8">
+    
+    <!-- System Sync Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800">
+        <span class="text-xs text-slate-400 block mb-1">Paystack Gateway</span>
+        <div class="flex items-center gap-2 font-bold text-emerald-400 text-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Connected (Active)
+        </div>
+      </div>
+
+      <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800">
+        <span class="text-xs text-slate-400 block mb-1">Google Sheets Sync</span>
+        <div id="statusSheet" class="flex items-center gap-2 font-bold text-emerald-400 text-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Automatic Logbook
+        </div>
+      </div>
+
+      <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800">
+        <span class="text-xs text-slate-400 block mb-1">Total Beauty Bookings</span>
+        <div id="statBookings" class="font-extrabold text-white text-2xl">0</div>
+      </div>
+
+      <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800">
+        <span class="text-xs text-slate-400 block mb-1">Total Food Orders</span>
+        <div id="statOrders" class="font-extrabold text-amber-400 text-2xl">0</div>
+      </div>
+    </div>
+
+    <!-- Tab navigation -->
+    <div class="flex border-b border-slate-800 mb-6">
+      <button id="tabBeautyBtn" onclick="switchTab('beauty')" class="px-6 py-3 font-bold text-sm text-rose-400 border-b-2 border-rose-500">
+        💇 Salon & Lash Appointments
+      </button>
+      <button id="tabFoodBtn" onclick="switchTab('food')" class="px-6 py-3 font-bold text-sm text-slate-400 hover:text-white">
+        🍔 Food & Snacks Orders
+      </button>
+    </div>
+
+    <!-- Beauty Bookings Feed -->
+    <section id="beautySection">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold text-white">Upcoming Beauty Appointments</h2>
+        <span class="text-xs text-slate-400">Click phone to WhatsApp client directly</span>
+      </div>
+
+      <div id="bookingsList" class="space-y-3">
+        <div class="p-8 text-center text-slate-500 bg-slate-900/40 rounded-2xl border border-slate-800/80">
+          No appointments recorded yet. Submit a test booking on the Beauty page to see it appear here live!
+        </div>
+      </div>
+    </section>
+
+    <!-- Food Orders Feed -->
+    <section id="foodSection" class="hidden">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold text-white">Kitchen Order Queue</h2>
+        <span class="text-xs text-slate-400">Live incoming food tickets</span>
+      </div>
+
+      <div id="ordersList" class="space-y-3">
+        <div class="p-8 text-center text-slate-500 bg-slate-900/40 rounded-2xl border border-slate-800/80">
+          No food orders placed yet. Add items to tray on the Food page to see them appear here!
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    let currentTab = 'beauty';
+
+    function switchTab(tab) {
+      currentTab = tab;
+      const beautyBtn = document.getElementById('tabBeautyBtn');
+      const foodBtn = document.getElementById('tabFoodBtn');
+      const beautySec = document.getElementById('beautySection');
+      const foodSec = document.getElementById('foodSection');
+
+      if (tab === 'beauty') {
+        beautyBtn.className = 'px-6 py-3 font-bold text-sm text-rose-400 border-b-2 border-rose-500';
+        foodBtn.className = 'px-6 py-3 font-bold text-sm text-slate-400 hover:text-white';
+        beautySec.classList.remove('hidden');
+        foodSec.classList.add('hidden');
+      } else {
+        foodBtn.className = 'px-6 py-3 font-bold text-sm text-amber-400 border-b-2 border-amber-500';
+        beautyBtn.className = 'px-6 py-3 font-bold text-sm text-slate-400 hover:text-white';
+        foodSec.classList.remove('hidden');
+        beautySec.classList.add('hidden');
+      }
+    }
+
+    async function fetchRecords() {
+      try {
+        const res = await fetch('/api/records');
+        const data = await res.json();
+
+        const bookings = data.bookings || [];
+        const orders = data.orders || [];
+
+        document.getElementById('statBookings').innerText = bookings.length;
+        document.getElementById('statOrders').innerText = orders.length;
+
+        // Render Bookings
+        const bookingsList = document.getElementById('bookingsList');
+        if (bookings.length === 0) {
+          bookingsList.innerHTML = `<div class="p-8 text-center text-slate-500 bg-slate-900/40 rounded-2xl border border-slate-800/80">No appointments recorded yet.</div>`;
+        } else {
+          bookingsList.innerHTML = bookings.map(b => `
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div class="flex items-center gap-3">
+                  <span class="px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-300 font-bold text-xs">${b.serviceName}</span>
+                  <span class="text-xs text-slate-400">${b.date} • <strong class="text-white">${b.timeSlot}</strong></span>
+                </div>
+                <div class="mt-2 text-sm text-white font-semibold flex items-center gap-2">
+                  <span>${b.customerName}</span>
+                  <span class="text-xs text-slate-400 font-normal">(${b.stylist})</span>
+                </div>
+                <div class="text-xs text-slate-400 mt-0.5">Ref: <span class="font-mono text-slate-300">${b.reference}</span> • Notes: ${b.notes || 'None'}</div>
+              </div>
+
+              <div class="flex items-center gap-4">
+                <div class="text-right">
+                  <div class="text-sm font-bold text-emerald-400">₦${(b.amount || 0).toLocaleString()}</div>
+                  <div class="text-[10px] text-emerald-400 uppercase tracking-wider font-semibold">Deposit Paid</div>
+                </div>
+
+                <a href="https://wa.me/${(b.customerPhone || '').replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(b.customerName)},%20confirming%20your%20appointment%20for%20${encodeURIComponent(b.serviceName)}%20at%20${encodeURIComponent(b.timeSlot)}" target="_blank" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center gap-1.5 transition">
+                  💬 WhatsApp
+                </a>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // Render Orders
+        const ordersList = document.getElementById('ordersList');
+        if (orders.length === 0) {
+          ordersList.innerHTML = `<div class="p-8 text-center text-slate-500 bg-slate-900/40 rounded-2xl border border-slate-800/80">No food orders placed yet.</div>`;
+        } else {
+          ordersList.innerHTML = orders.map(o => `
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div class="flex items-center gap-3">
+                  <span class="px-2.5 py-1 rounded-lg ${o.fulfillmentType === 'PICKUP' ? 'bg-blue-500/10 text-blue-300' : 'bg-amber-500/10 text-amber-300'} font-bold text-xs">
+                    ${o.fulfillmentType === 'PICKUP' ? '🏃 PICKUP' : '🛵 DELIVERY'}
+                  </span>
+                  <span class="text-xs text-slate-400">Address: <strong class="text-white">${o.address}</strong></span>
+                </div>
+                <div class="mt-2 text-sm text-white font-semibold">
+                  <span>${o.customerName}</span>
+                </div>
+                <div class="text-xs text-slate-300 mt-1 whitespace-pre-line">${o.itemsSummary || 'Standard order'}</div>
+                <div class="text-xs text-slate-500 mt-1">Ref: <span class="font-mono text-slate-400">${o.reference}</span> • Notes: ${o.notes || 'None'}</div>
+              </div>
+
+              <div class="flex items-center gap-4">
+                <div class="text-right">
+                  <div class="text-sm font-bold text-amber-400">₦${(o.amount || 0).toLocaleString()}</div>
+                  <div class="text-[10px] text-emerald-400 uppercase tracking-wider font-semibold">Paid in Full</div>
+                </div>
+
+                <a href="https://wa.me/${(o.customerPhone || '').replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(o.customerName)},%20your%20food%20order%20(${encodeURIComponent(o.reference)})%20is%20being%20prepared!" target="_blank" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center gap-1.5 transition">
+                  💬 WhatsApp
+                </a>
+              </div>
+            </div>
+          `).join('');
+        }
+
+      } catch (err) {
+        console.error('Fetch error:', err);
+      }
+    }
+
+    // Initial load and poll every 5 seconds
+    fetchRecords();
+    setInterval(fetchRecords, 5000);
+  </script>
+</body>
+</html>

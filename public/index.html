@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cravers Shawarma & Doughnut Co. • Order Online</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-amber-950/20 text-stone-100 min-h-screen bg-stone-950 pb-32 antialiased selection:bg-amber-500 selection:text-black">
+
+  <!-- Top Announcement Bar -->
+  <div class="bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 px-4 py-2 text-center text-xs text-white font-semibold flex items-center justify-center gap-2">
+    <span>🔥 Freshly Grilled & Baked to Order</span>
+    <span>•</span>
+    <span>⚡ 25-40 min Delivery</span>
+  </div>
+
+  <!-- Header -->
+  <header class="max-w-2xl mx-auto px-5 pt-6 pb-4">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-2xl shadow-inner">
+          🌯
+        </div>
+        <div>
+          <h1 class="text-xl font-extrabold text-white">Cravers Shawarma & Doughnuts</h1>
+          <p class="text-xs text-stone-400">Lekki Phase 1 • Open till 11:00 PM</p>
+        </div>
+      </div>
+      <div class="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Kitchen Open
+      </div>
+    </div>
+
+    <!-- Fulfillment Picker (Delivery vs Pickup) -->
+    <div class="grid grid-cols-2 p-1 rounded-2xl bg-stone-900 border border-stone-800">
+      <button id="btnDelivery" type="button" class="py-2.5 rounded-xl bg-amber-500 text-stone-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition">
+        🛵 Doorstep Delivery
+      </button>
+      <button id="btnPickup" type="button" class="py-2.5 rounded-xl text-stone-400 hover:text-white font-semibold text-xs flex items-center justify-center gap-2 transition">
+        🏃 Pick Up at Store
+      </button>
+    </div>
+  </header>
+
+  <!-- Menu Section -->
+  <main class="max-w-2xl mx-auto px-5 mt-4">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-base font-extrabold text-white tracking-tight">Today's Menu</h2>
+      <span class="text-xs text-stone-400">Tap + to add to tray</span>
+    </div>
+
+    <div class="space-y-4" id="menuContainer">
+      <!-- Item 1 -->
+      <div class="food-card p-4 rounded-3xl bg-stone-900/80 border border-stone-800 flex gap-4 items-center">
+        <div class="w-24 h-24 rounded-2xl bg-stone-800 overflow-hidden flex-shrink-0 relative">
+          <img src="https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=300&auto=format&fit=crop&q=80" alt="Shawarma" class="w-full h-full object-cover">
+        </div>
+        <div class="flex-grow">
+          <div class="flex items-start justify-between">
+            <h3 class="font-bold text-white text-sm">Double Sausage Chicken Shawarma</h3>
+          </div>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Juicy shredded chicken breast, 2 beef franks, special creamy sauce & crisp slaw.</p>
+          <div class="flex items-center justify-between mt-3">
+            <span class="font-extrabold text-amber-400 text-sm">₦4,000</span>
+            <button onclick="addToCart('Double Sausage Chicken Shawarma', 4000, 'Extra Sausage (+₦500)')" class="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs active:scale-95 transition">
+              + Add
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="food-card p-4 rounded-3xl bg-stone-900/80 border border-stone-800 flex gap-4 items-center">
+        <div class="w-24 h-24 rounded-2xl bg-stone-800 overflow-hidden flex-shrink-0 relative">
+          <img src="https://images.unsplash.com/photo-1561651823-34feb02250e4?w=300&auto=format&fit=crop&q=80" alt="Shawarma Combo" class="w-full h-full object-cover">
+        </div>
+        <div class="flex-grow">
+          <div class="flex items-start justify-between">
+            <h3 class="font-bold text-white text-sm">Jumbo Meat Mix Shawarma (Cheesy)</h3>
+          </div>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Premium beef tenderloin & spiced chicken with double mozzarella melt.</p>
+          <div class="flex items-center justify-between mt-3">
+            <span class="font-extrabold text-amber-400 text-sm">₦5,500</span>
+            <button onclick="addToCart('Jumbo Meat Mix Shawarma (Cheesy)', 5500, 'Double Melted Cheese')" class="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs active:scale-95 transition">
+              + Add
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="food-card p-4 rounded-3xl bg-stone-900/80 border border-stone-800 flex gap-4 items-center">
+        <div class="w-24 h-24 rounded-2xl bg-stone-800 overflow-hidden flex-shrink-0 relative">
+          <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=300&auto=format&fit=crop&q=80" alt="Doughnuts" class="w-full h-full object-cover">
+        </div>
+        <div class="flex-grow">
+          <div class="flex items-start justify-between">
+            <h3 class="font-bold text-white text-sm">Glazed Artisan Doughnuts (Box of 4)</h3>
+          </div>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Puffy brioche dough: 2x Nutella Hazelnut, 1x Biscoff Crumble, 1x Classic Vanilla Glaze.</p>
+          <div class="flex items-center justify-between mt-3">
+            <span class="font-extrabold text-amber-400 text-sm">₦4,800</span>
+            <button onclick="addToCart('Glazed Artisan Doughnuts (Box of 4)', 4800, 'Assorted Box')" class="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs active:scale-95 transition">
+              + Add
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="food-card p-4 rounded-3xl bg-stone-900/80 border border-stone-800 flex gap-4 items-center">
+        <div class="w-24 h-24 rounded-2xl bg-stone-800 overflow-hidden flex-shrink-0 relative">
+          <img src="https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=300&auto=format&fit=crop&q=80" alt="Milkshake" class="w-full h-full object-cover">
+        </div>
+        <div class="flex-grow">
+          <div class="flex items-start justify-between">
+            <h3 class="font-bold text-white text-sm">Thick Oreo Crush Shake (500ml)</h3>
+          </div>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Blended dairy ice cream with cracked Oreo cookies and rich chocolate drizzle.</p>
+          <div class="flex items-center justify-between mt-3">
+            <span class="font-extrabold text-amber-400 text-sm">₦3,000</span>
+            <button onclick="addToCart('Thick Oreo Crush Shake', 3000, 'Chilled')" class="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs active:scale-95 transition">
+              + Add
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Sticky Bottom Cart Bar -->
+  <div id="cartBar" class="fixed bottom-0 left-0 right-0 p-4 bg-stone-950/90 backdrop-blur-xl border-t border-stone-800 z-40 transition transform translate-y-0">
+    <div class="max-w-2xl mx-auto flex items-center justify-between">
+      <div>
+        <div class="text-xs text-stone-400"><span id="cartCount">0</span> items in tray</div>
+        <div id="cartTotalText" class="text-lg font-extrabold text-white">₦0</div>
+      </div>
+      <button id="btnOpenCheckout" onclick="openCheckoutModal()" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-extrabold text-sm shadow-lg shadow-amber-500/20 hover:brightness-110 active:scale-95 transition flex items-center gap-2">
+        <span>Proceed to Checkout</span> →
+      </button>
+    </div>
+  </div>
+
+  <!-- Checkout Drawer / Modal -->
+  <div id="checkoutModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-stone-900 border border-stone-800 rounded-t-3xl sm:rounded-3xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-stone-800 mb-4">
+        <h3 class="text-lg font-bold text-white">Complete Your Order</h3>
+        <button onclick="closeCheckoutModal()" class="text-stone-400 hover:text-white text-xl">✕</button>
+      </div>
+
+      <!-- Order Tray Items -->
+      <div class="mb-4">
+        <div class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">Order Summary</div>
+        <div id="modalCartItems" class="space-y-2 text-xs">
+          <!-- Items injected via JS -->
+        </div>
+      </div>
+
+      <!-- Customer Details Form -->
+      <div class="space-y-3 mb-6">
+        <div>
+          <label class="block text-xs font-medium text-stone-400 mb-1">Your Name</label>
+          <input type="text" id="custName" placeholder="e.g. Tunde Williams" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-stone-400 mb-1">Phone Number (For Rider / Updates)</label>
+          <input type="tel" id="custPhone" placeholder="e.g. 08123456789" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
+        </div>
+
+        <div id="addressField">
+          <label class="block text-xs font-medium text-stone-400 mb-1">Delivery Address & Landmark</label>
+          <input type="text" id="custAddress" placeholder="e.g. Flat 3, Block B, Admiralty Way, Lekki 1" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-stone-400 mb-1">Extra Notes (e.g. Mild pepper, extra napkins)</label>
+          <input type="text" id="custNotes" placeholder="Special cooking instructions" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
+        </div>
+      </div>
+
+      <!-- Total Breakdown -->
+      <div class="p-4 rounded-2xl bg-stone-950 border border-stone-800 text-xs space-y-2 mb-6">
+        <div class="flex justify-between text-stone-400"><span>Subtotal:</span><span id="subtotalVal">₦0</span></div>
+        <div class="flex justify-between text-stone-400"><span id="fulfillmentLabel">Delivery Fee:</span><span id="deliveryVal">₦1,500</span></div>
+        <div class="flex justify-between text-sm font-bold text-white border-t border-stone-800 pt-2">
+          <span>Total to Pay:</span><span id="finalTotalVal" class="text-amber-400">₦0</span>
+        </div>
+      </div>
+
+      <!-- Paystack Pay Buttons -->
+      <button onclick="submitOrder(false)" class="w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-bold text-sm shadow-xl shadow-amber-500/20 hover:brightness-110 transition mb-3">
+        Pay via Paystack & Send to Kitchen
+      </button>
+      
+      <button onclick="submitOrder(true)" type="button" class="w-full py-2.5 rounded-xl bg-stone-800 text-stone-400 hover:text-white font-medium text-xs transition">
+        ⚡ 1-Click Demo Order (Simulated)
+      </button>
+    </div>
+  </div>
+
+  <!-- Order Receipt Success Modal -->
+  <div id="receiptModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-stone-900 border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
+      <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-3xl">
+        ✓
+      </div>
+      <h3 class="text-xl font-bold text-white mb-1">Order Sent to Kitchen!</h3>
+      <p class="text-xs text-stone-400 mb-4">Payment confirmed. The chefs are wrapping your food.</p>
+      
+      <div class="p-4 rounded-xl bg-stone-950 border border-stone-800 text-left text-xs space-y-2 mb-5">
+        <div class="flex justify-between"><span class="text-stone-400">Order Ref:</span><span id="modalReceiptRef" class="font-mono text-amber-400"></span></div>
+        <div class="flex justify-between"><span class="text-stone-400">Status:</span><span class="text-emerald-400 font-semibold">PREPARING (PAID)</span></div>
+        <div class="flex justify-between"><span class="text-stone-400">Estimated Time:</span><span class="text-white font-semibold">30 - 45 mins</span></div>
+      </div>
+
+      <div class="space-y-2">
+        <a id="modalWhatsAppOrderBtn" target="_blank" class="w-full py-3 px-4 rounded-xl bg-emerald-600 text-white font-semibold text-xs flex items-center justify-center gap-2 hover:bg-emerald-500 transition">
+          💬 Message Kitchen on WhatsApp
+        </a>
+        <button onclick="location.reload()" class="w-full py-2.5 px-4 rounded-xl bg-stone-800 text-stone-300 text-xs font-medium hover:bg-stone-700 transition">
+          Order More
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let cart = [];
+    let fulfillment = 'DELIVERY'; // or 'PICKUP'
+    let deliveryFee = 1500;
+
+    // Fulfillment toggles
+    const btnDelivery = document.getElementById('btnDelivery');
+    const btnPickup = document.getElementById('btnPickup');
+    const addressField = document.getElementById('addressField');
+
+    btnDelivery.addEventListener('click', () => {
+      fulfillment = 'DELIVERY';
+      deliveryFee = 1500;
+      btnDelivery.className = 'py-2.5 rounded-xl bg-amber-500 text-stone-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition';
+      btnPickup.className = 'py-2.5 rounded-xl text-stone-400 hover:text-white font-semibold text-xs flex items-center justify-center gap-2 transition';
+      addressField.style.display = 'block';
+      updateCartTotals();
+    });
+
+    btnPickup.addEventListener('click', () => {
+      fulfillment = 'PICKUP';
+      deliveryFee = 0;
+      btnPickup.className = 'py-2.5 rounded-xl bg-amber-500 text-stone-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition';
+      btnDelivery.className = 'py-2.5 rounded-xl text-stone-400 hover:text-white font-semibold text-xs flex items-center justify-center gap-2 transition';
+      addressField.style.display = 'none';
+      updateCartTotals();
+    });
+
+    function addToCart(name, price, extras) {
+      const existing = cart.find(i => i.name === name);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ name, price, extras, quantity: 1 });
+      }
+      updateCartTotals();
+    }
+
+    function updateCartTotals() {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const total = subtotal > 0 ? subtotal + deliveryFee : 0;
+
+      document.getElementById('cartCount').innerText = count;
+      document.getElementById('cartTotalText').innerText = `₦${total.toLocaleString()}`;
+      document.getElementById('subtotalVal').innerText = `₦${subtotal.toLocaleString()}`;
+      document.getElementById('deliveryVal').innerText = fulfillment === 'DELIVERY' ? `₦${deliveryFee.toLocaleString()}` : 'FREE (Pickup)';
+      document.getElementById('finalTotalVal').innerText = `₦${total.toLocaleString()}`;
+    }
+
+    function openCheckoutModal() {
+      if (cart.length === 0) {
+        alert('Your tray is empty! Add some delicious items first.');
+        return;
+      }
+      const itemsContainer = document.getElementById('modalCartItems');
+      itemsContainer.innerHTML = cart.map(item => `
+        <div class="flex justify-between items-center py-1 border-b border-stone-800/50">
+          <div>
+            <span class="font-semibold text-white">${item.quantity}x ${item.name}</span>
+            ${item.extras ? `<span class="text-stone-400 block text-[10px]">${item.extras}</span>` : ''}
+          </div>
+          <span class="font-semibold text-amber-400">₦${(item.price * item.quantity).toLocaleString()}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('checkoutModal').classList.remove('hidden');
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkoutModal').classList.add('hidden');
+    }
+
+    async function submitOrder(isDemo = false) {
+      const name = document.getElementById('custName').value.trim() || (isDemo ? 'Chinedu Eze' : '');
+      const phone = document.getElementById('custPhone').value.trim() || (isDemo ? '08031234567' : '');
+      const address = document.getElementById('custAddress').value.trim() || (isDemo ? 'Block 4, Lekki Phase 1' : '');
+      const notes = document.getElementById('custNotes').value.trim();
+
+      if (!name || !phone) {
+        alert('Please fill in your name and phone number.');
+        return;
+      }
+
+      if (fulfillment === 'DELIVERY' && !address) {
+        alert('Please provide your delivery address.');
+        return;
+      }
+
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const totalAmount = subtotal + deliveryFee;
+      const ref = `FOOD_${Date.now()}`;
+
+      try {
+        const res = await fetch('/api/orders/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customerName: name,
+            customerPhone: phone,
+            fulfillmentType: fulfillment,
+            address: fulfillment === 'PICKUP' ? 'Store Pickup' : address,
+            items: cart,
+            totalAmount,
+            notes,
+            reference: ref
+          })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          closeCheckoutModal();
+          document.getElementById('modalReceiptRef').innerText = ref;
+
+          const waText = `Hi Cravers Kitchen, I just placed order ${ref} (${cart.length} items, Total: ₦${totalAmount.toLocaleString()}) for ${name}`;
+          document.getElementById('modalWhatsAppOrderBtn').href = `https://wa.me/2348000000000?text=${encodeURIComponent(waText)}`;
+
+          document.getElementById('receiptModal').classList.remove('hidden');
+        } else {
+          alert('Order error: ' + (data.error || 'Failed to submit order'));
+        }
+      } catch (err) {
+        alert('Network error: ' + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

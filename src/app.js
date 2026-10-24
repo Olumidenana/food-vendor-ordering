@@ -22,6 +22,7 @@ app.use(express.json({
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Explicit clean routes for multi-page restaurant suite
+app.get(['/', '/index', '/index.html'], (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'index.html')));
 app.get(['/menu', '/menu.html'], (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'menu.html')));
 app.get(['/order', '/order.html'], (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'order.html')));
 app.get(['/track', '/track.html'], (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'track.html')));

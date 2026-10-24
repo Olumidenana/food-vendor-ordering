@@ -21,10 +21,15 @@ app.use(express.json({
 // Serve static assets
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Explicit clean routes
-app.get(['/admin', '/admin.html'], (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'admin', 'index.html'));
-});
+// Explicit clean routes for multi-page restaurant suite
+app.get(['/menu', '/menu.html'], (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'menu.html')));
+app.get(['/order', '/order.html'], (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'order.html')));
+app.get(['/track', '/track.html'], (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'track.html')));
+app.get(['/about', '/about.html'], (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'about.html')));
+app.get(['/admin', '/admin.html'], (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'admin', 'index.html')));
+
+// In-memory status map for tracking fallback
+const activeOrderStatuses = new Map();
 
 /**
  * Synchronize food order to Supabase table `food_orders`
@@ -58,7 +63,7 @@ async function syncToSupabase(order) {
           total_amount: order.amount,
           payment_status: 'PAID',
           notes: order.notes || '',
-          vendor_name: 'CRAVERS GRILL & SHAWARMA'
+          vendor_name: 'CRAVERS GRILL & SMOKEHOUSE'
         })
       });
 
@@ -78,7 +83,7 @@ async function syncToSupabase(order) {
 app.get(['/api/health', '/health'], (req, res) => {
   res.json({
     status: 'online',
-    system: 'Cravers Food & Grill Engine',
+    system: 'Cravers Gourmet Food & Smokehouse Engine',
     timestamp: new Date().toISOString(),
     demoMode: IS_DEMO_MODE,
     hasGoogleSheetWebhook: !!process.env.GOOGLE_SHEET_WEBHOOK_URL,
@@ -87,7 +92,7 @@ app.get(['/api/health', '/health'], (req, res) => {
   });
 });
 
-// 2. Food & Treats Order Endpoint (supports both /api/orders/create and /orders/create)
+// 2. Food & Treats Order Endpoint
 app.post(['/api/orders/create', '/orders/create'], async (req, res) => {
   try {
     const {
@@ -100,6 +105,7 @@ app.post(['/api/orders/create', '/orders/create'], async (req, res) => {
       subtotal,
       deliveryFee,
       totalAmount,
+      deliveryZone,
       notes,
       reference
     } = req.body;
@@ -112,23 +118,33 @@ app.post(['/api/orders/create', '/orders/create'], async (req, res) => {
       .map(it => `• ${it.quantity}x ${it.name} ${it.extras ? `(${it.extras})` : ''} - ₦${(it.price * it.quantity).toLocaleString()}`)
       .join('\n');
 
+    const finalRef = reference || `FOOD_${Date.now()}`;
+
     const orderPayload = {
       type: 'FOOD_ORDER',
-      reference: reference || `FOOD_${Date.now()}`,
+      reference: finalRef,
       customerName,
       customerPhone,
       customerEmail: customerEmail || '',
       fulfillmentType: fulfillmentType || 'DELIVERY',
       address: fulfillmentType === 'PICKUP' ? 'Store Pickup' : (address || 'Not provided'),
+      deliveryZone: deliveryZone || 'Standard Zone',
       items,
       itemsSummary,
       subtotal: Number(subtotal) || Number(totalAmount),
       deliveryFee: Number(deliveryFee) || 0,
       amount: Number(totalAmount) || 0,
       paymentStatus: 'PAID',
+      status: 'PREPARING', // Initial kitchen state
       notes: notes || '',
       createdAt: new Date().toISOString()
     };
+
+    activeOrderStatuses.set(finalRef, {
+      ...orderPayload,
+      status: 'PREPARING',
+      updatedAt: new Date().toISOString()
+    });
 
     // Parallel sync to Google Sheets, Supabase, and Notifications
     const [sheetSync] = await Promise.all([
@@ -149,7 +165,149 @@ app.post(['/api/orders/create', '/orders/create'], async (req, res) => {
   }
 });
 
-// 3. Paystack Transaction Initialize
+// 3. Live Order & Delivery Route Tracking
+app.get(['/api/orders/track/:ref', '/orders/track/:ref'], async (req, res) => {
+  try {
+    const { ref } = req.params;
+    if (!ref) {
+      return res.status(400).json({ error: 'Missing order reference' });
+    }
+
+    // 1. Check in-memory status
+    if (activeOrderStatuses.has(ref)) {
+      return res.json({
+        success: true,
+        order: activeOrderStatuses.get(ref)
+      });
+    }
+
+    // 2. Check Supabase
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_ANON_KEY;
+    if (supabaseUrl && supabaseKey) {
+      try {
+        const queryUrl = `${supabaseUrl.replace(/\/$/, '')}/rest/v1/food_orders?reference=eq.${encodeURIComponent(ref)}&select=*`;
+        const sbRes = await fetch(queryUrl, {
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`
+          }
+        });
+        if (sbRes.ok) {
+          const rows = await sbRes.json();
+          if (rows && rows.length > 0) {
+            const r = rows[0];
+            const orderData = {
+              reference: r.reference,
+              customerName: r.customer_name,
+              customerPhone: r.customer_phone,
+              fulfillmentType: r.fulfillment_type,
+              address: r.delivery_address,
+              items: r.items,
+              itemsSummary: r.items_summary,
+              amount: r.total_amount,
+              paymentStatus: r.payment_status,
+              status: r.status || 'PREPARING',
+              createdAt: r.created_at
+            };
+            activeOrderStatuses.set(ref, orderData);
+            return res.json({ success: true, order: orderData });
+          }
+        }
+      } catch (err) {
+        console.warn('[Tracking Supabase]', err.message);
+      }
+    }
+
+    // 3. Check local records
+    const { orders } = getStoredRecords();
+    const local = orders.find(o => o.reference === ref);
+    if (local) {
+      return res.json({
+        success: true,
+        order: {
+          ...local,
+          status: 'PREPARING'
+        }
+      });
+    }
+
+    // 4. Default / Simulated Live Demo Tracker (for testing any reference)
+    res.json({
+      success: true,
+      simulated: true,
+      order: {
+        reference: ref,
+        customerName: 'Valued Food Lover',
+        customerPhone: '08149640122',
+        fulfillmentType: 'DELIVERY',
+        address: 'Prime Commercial Hub, Osogbo',
+        deliveryZone: 'Olaiya / Gbongan Road Route',
+        items: [
+          { name: 'Double Sausage Chicken Shawarma (Suya Hot)', quantity: 2, price: 4000 },
+          { name: 'Signature Chapman Mocktail', quantity: 2, price: 1800 }
+        ],
+        amount: 11600,
+        paymentStatus: 'PAID',
+        status: 'DISPATCHED',
+        riderName: 'Sunday O. (Bike #04)',
+        riderPhone: '08149640122',
+        estimatedMinutes: '12 - 18 mins',
+        createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString()
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 4. Vendor Status Update Endpoint (e.g. PREPARING -> DISPATCHED -> DELIVERED)
+app.post(['/api/orders/status', '/orders/status'], async (req, res) => {
+  try {
+    const { reference, status } = req.body;
+    if (!reference || !status) {
+      return res.status(400).json({ error: 'Missing reference or status' });
+    }
+
+    const validStatuses = ['RECEIVED', 'PREPARING', 'DISPATCHED', 'DELIVERED'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    if (activeOrderStatuses.has(reference)) {
+      const order = activeOrderStatuses.get(reference);
+      order.status = status;
+      order.updatedAt = new Date().toISOString();
+      activeOrderStatuses.set(reference, order);
+    }
+
+    // Update in Supabase if available
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_ANON_KEY;
+    if (supabaseUrl && supabaseKey) {
+      try {
+        const patchUrl = `${supabaseUrl.replace(/\/$/, '')}/rest/v1/food_orders?reference=eq.${encodeURIComponent(reference)}`;
+        await fetch(patchUrl, {
+          method: 'PATCH',
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ status })
+        });
+      } catch (e) {
+        console.warn('[Status Patch Error]', e.message);
+      }
+    }
+
+    res.json({ success: true, reference, status });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 5. Paystack Transaction Initialize
 app.post(['/api/paystack/initialize', '/paystack/initialize'], async (req, res) => {
   try {
     const { email, amount, metadata, callbackUrl } = req.body;
@@ -169,7 +327,7 @@ app.post(['/api/paystack/initialize', '/paystack/initialize'], async (req, res) 
   }
 });
 
-// 4. Paystack Webhook
+// 6. Paystack Webhook
 app.post(['/api/paystack/webhook', '/paystack/webhook'], async (req, res) => {
   const signature = req.headers['x-paystack-signature'];
   const isValid = verifyWebhookSignature(req.rawBody, signature);
@@ -195,8 +353,11 @@ app.post(['/api/paystack/webhook', '/paystack/webhook'], async (req, res) => {
         itemsSummary: metadata.itemsSummary,
         amount: data.amount / 100,
         paymentStatus: 'PAID',
+        status: 'PREPARING',
         notes: metadata.notes
       };
+
+      activeOrderStatuses.set(data.reference, orderPayload);
 
       await Promise.all([
         syncToGoogleSheet(orderPayload),
@@ -209,7 +370,7 @@ app.post(['/api/paystack/webhook', '/paystack/webhook'], async (req, res) => {
   res.sendStatus(200);
 });
 
-// 5. Admin Data Records
+// 7. Admin Data Records
 app.get(['/api/records', '/records'], (req, res) => {
   const records = getStoredRecords();
   res.json(records);

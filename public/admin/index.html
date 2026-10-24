@@ -3,218 +3,189 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vendor Dashboard • SmartBiz Hub</title>
+  <title>Kitchen Dispatch & Operations Control • Cravers Smokehouse</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .amber-gradient {
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+    }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-rose-500 selection:text-white pb-16">
+<body class="bg-[#0c0a09] text-stone-100 min-h-screen antialiased selection:bg-amber-500 selection:text-black pb-16">
 
-  <!-- Admin Header -->
-  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-xl sticky top-0 z-30">
+  <!-- Header -->
+  <header class="border-b border-stone-800 bg-[#141211]/90 backdrop-blur-xl sticky top-0 z-30">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center font-black text-white text-lg">
-          SB
+        <div class="w-10 h-10 rounded-xl amber-gradient flex items-center justify-center font-black text-stone-950 text-xl shadow-lg">
+          🔥
         </div>
         <div>
-          <h1 class="text-base font-bold text-white">SmartBiz Owner Portal</h1>
-          <p class="text-[11px] text-slate-400">Live Orders & Appointments Feed</p>
+          <h1 class="text-base font-bold text-white leading-tight">Kitchen Operations Portal</h1>
+          <p class="text-[11px] text-stone-400">Live Incoming Tickets & Route Dispatch Controller</p>
         </div>
       </div>
 
       <div class="flex items-center gap-3">
-        <button onclick="fetchRecords()" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 border border-slate-700 flex items-center gap-1.5 transition">
-          🔄 Refresh
+        <button onclick="fetchRecords()" class="px-3.5 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-xs text-stone-200 border border-stone-700 flex items-center gap-1.5 transition">
+          🔄 Refresh Orders
         </button>
-        <a href="/" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 border border-slate-700 transition">
-          ← Back to Hub
+        <a href="/" class="px-3.5 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-xs text-stone-200 border border-stone-700 transition">
+          ← Storefront
         </a>
       </div>
     </div>
   </header>
 
   <main class="max-w-6xl mx-auto px-6 pt-8">
-    
-    <!-- System Sync Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-      <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800">
-        <span class="text-xs text-slate-400 block mb-1">Paystack Gateway</span>
+    <!-- Stat Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="p-5 rounded-2xl bg-[#141211] border border-stone-800">
+        <span class="text-xs text-stone-400 block mb-1">Paystack Gateway</span>
         <div class="flex items-center gap-2 font-bold text-emerald-400 text-sm">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Connected (Active)
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Active (Direct CBN Bank)
         </div>
       </div>
 
-      <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800">
-        <span class="text-xs text-slate-400 block mb-1">Google Sheets Sync</span>
-        <div id="statusSheet" class="flex items-center gap-2 font-bold text-emerald-400 text-sm">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Automatic Logbook
+      <div class="p-5 rounded-2xl bg-[#141211] border border-stone-800">
+        <span class="text-xs text-stone-400 block mb-1">Google Sheets Sync</span>
+        <div class="flex items-center gap-2 font-bold text-emerald-400 text-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Live Kitchen Logbook
         </div>
       </div>
 
-      <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800">
-        <span class="text-xs text-slate-400 block mb-1">Total Beauty Bookings</span>
-        <div id="statBookings" class="font-extrabold text-white text-2xl">0</div>
+      <div class="p-5 rounded-2xl bg-[#141211] border border-stone-800">
+        <span class="text-xs text-stone-400 block mb-1">Total Orders Received</span>
+        <div id="statTotalOrders" class="font-extrabold text-white text-2xl">0</div>
       </div>
 
-      <div class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800">
-        <span class="text-xs text-slate-400 block mb-1">Total Food Orders</span>
-        <div id="statOrders" class="font-extrabold text-amber-400 text-2xl">0</div>
+      <div class="p-5 rounded-2xl bg-[#141211] border border-stone-800">
+        <span class="text-xs text-stone-400 block mb-1">Gross Kitchen Revenue</span>
+        <div id="statTotalRevenue" class="font-extrabold text-amber-400 text-2xl">₦0</div>
       </div>
     </div>
 
-    <!-- Tab navigation -->
-    <div class="flex border-b border-slate-800 mb-6">
-      <button id="tabBeautyBtn" onclick="switchTab('beauty')" class="px-6 py-3 font-bold text-sm text-rose-400 border-b-2 border-rose-500">
-        💇 Salon & Lash Appointments
-      </button>
-      <button id="tabFoodBtn" onclick="switchTab('food')" class="px-6 py-3 font-bold text-sm text-slate-400 hover:text-white">
-        🍔 Food & Snacks Orders
-      </button>
-    </div>
-
-    <!-- Beauty Bookings Feed -->
-    <section id="beautySection">
+    <!-- Active Orders Feed -->
+    <section>
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold text-white">Upcoming Beauty Appointments</h2>
-        <span class="text-xs text-slate-400">Click phone to WhatsApp client directly</span>
+        <div>
+          <h2 class="text-lg font-bold text-white">Live Kitchen & Dispatch Feed</h2>
+          <p class="text-xs text-stone-400">Click rider/customer button to message directly on WhatsApp</p>
+        </div>
       </div>
 
-      <div id="bookingsList" class="space-y-3">
-        <div class="p-8 text-center text-slate-500 bg-slate-900/40 rounded-2xl border border-slate-800/80">
-          No appointments recorded yet. Submit a test booking on the Beauty page to see it appear here live!
+      <div id="ordersList" class="space-y-4">
+        <div class="p-12 text-center text-stone-500 bg-[#141211] rounded-3xl border border-stone-800">
+          Syncing kitchen tickets... Tap "Refresh" or submit a test order from the storefront.
         </div>
       </div>
     </section>
-
-    <!-- Food Orders Feed -->
-    <section id="foodSection" class="hidden">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold text-white">Kitchen Order Queue</h2>
-        <span class="text-xs text-slate-400">Live incoming food tickets</span>
-      </div>
-
-      <div id="ordersList" class="space-y-3">
-        <div class="p-8 text-center text-slate-500 bg-slate-900/40 rounded-2xl border border-slate-800/80">
-          No food orders placed yet. Add items to tray on the Food page to see them appear here!
-        </div>
-      </div>
-    </section>
-
   </main>
 
   <script>
-    let currentTab = 'beauty';
-
-    function switchTab(tab) {
-      currentTab = tab;
-      const beautyBtn = document.getElementById('tabBeautyBtn');
-      const foodBtn = document.getElementById('tabFoodBtn');
-      const beautySec = document.getElementById('beautySection');
-      const foodSec = document.getElementById('foodSection');
-
-      if (tab === 'beauty') {
-        beautyBtn.className = 'px-6 py-3 font-bold text-sm text-rose-400 border-b-2 border-rose-500';
-        foodBtn.className = 'px-6 py-3 font-bold text-sm text-slate-400 hover:text-white';
-        beautySec.classList.remove('hidden');
-        foodSec.classList.add('hidden');
-      } else {
-        foodBtn.className = 'px-6 py-3 font-bold text-sm text-amber-400 border-b-2 border-amber-500';
-        beautyBtn.className = 'px-6 py-3 font-bold text-sm text-slate-400 hover:text-white';
-        foodSec.classList.remove('hidden');
-        beautySec.classList.add('hidden');
-      }
-    }
-
     async function fetchRecords() {
+      const container = document.getElementById('ordersList');
       try {
         const res = await fetch('/api/records');
         const data = await res.json();
-
-        const bookings = data.bookings || [];
         const orders = data.orders || [];
 
-        document.getElementById('statBookings').innerText = bookings.length;
-        document.getElementById('statOrders').innerText = orders.length;
+        document.getElementById('statTotalOrders').innerText = orders.length;
+        const totalRev = orders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0);
+        document.getElementById('statTotalRevenue').innerText = `₦${totalRev.toLocaleString()}`;
 
-        // Render Bookings
-        const bookingsList = document.getElementById('bookingsList');
-        if (bookings.length === 0) {
-          bookingsList.innerHTML = `<div class="p-8 text-center text-slate-500 bg-slate-900/40 rounded-2xl border border-slate-800/80">No appointments recorded yet.</div>`;
-        } else {
-          bookingsList.innerHTML = bookings.map(b => `
-            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <div class="flex items-center gap-3">
-                  <span class="px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-300 font-bold text-xs">${b.serviceName}</span>
-                  <span class="text-xs text-slate-400">${b.date} • <strong class="text-white">${b.timeSlot}</strong></span>
-                </div>
-                <div class="mt-2 text-sm text-white font-semibold flex items-center gap-2">
-                  <span>${b.customerName}</span>
-                  <span class="text-xs text-slate-400 font-normal">(${b.stylist})</span>
-                </div>
-                <div class="text-xs text-slate-400 mt-0.5">Ref: <span class="font-mono text-slate-300">${b.reference}</span> • Notes: ${b.notes || 'None'}</div>
-              </div>
-
-              <div class="flex items-center gap-4">
-                <div class="text-right">
-                  <div class="text-sm font-bold text-emerald-400">₦${(b.amount || 0).toLocaleString()}</div>
-                  <div class="text-[10px] text-emerald-400 uppercase tracking-wider font-semibold">Deposit Paid</div>
-                </div>
-
-                <a href="https://wa.me/${(b.customerPhone || '').replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(b.customerName)},%20confirming%20your%20appointment%20for%20${encodeURIComponent(b.serviceName)}%20at%20${encodeURIComponent(b.timeSlot)}" target="_blank" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center gap-1.5 transition">
-                  💬 WhatsApp
-                </a>
-              </div>
-            </div>
-          `).join('');
-        }
-
-        // Render Orders
-        const ordersList = document.getElementById('ordersList');
         if (orders.length === 0) {
-          ordersList.innerHTML = `<div class="p-8 text-center text-slate-500 bg-slate-900/40 rounded-2xl border border-slate-800/80">No food orders placed yet.</div>`;
-        } else {
-          ordersList.innerHTML = orders.map(o => `
-            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
+          container.innerHTML = `
+            <div class="p-12 text-center text-stone-500 bg-[#141211] rounded-3xl border border-stone-800">
+              No orders logged yet. Visit <a href="/order.html" class="text-amber-400 underline font-bold">order.html</a> to place your first food order!
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = orders.map(o => {
+          const cleanPhone = (o.customerPhone || '').replace(/\D/g, '');
+          const waPhone = cleanPhone.startsWith('0') ? '234' + cleanPhone.substring(1) : cleanPhone;
+          const status = o.status || 'PREPARING';
+
+          return `
+            <div class="p-6 rounded-3xl bg-[#141211] border border-stone-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div class="space-y-2">
                 <div class="flex items-center gap-3">
-                  <span class="px-2.5 py-1 rounded-lg ${o.fulfillmentType === 'PICKUP' ? 'bg-blue-500/10 text-blue-300' : 'bg-amber-500/10 text-amber-300'} font-bold text-xs">
-                    ${o.fulfillmentType === 'PICKUP' ? '🏃 PICKUP' : '🛵 DELIVERY'}
+                  <span class="font-mono font-bold text-amber-400 text-sm">${o.reference}</span>
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                    status === 'DELIVERED' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+                    status === 'DISPATCHED' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' :
+                    'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                  }">
+                    ${status}
                   </span>
-                  <span class="text-xs text-slate-400">Address: <strong class="text-white">${o.address}</strong></span>
+                  <span class="text-stone-500 text-[11px]">${new Date(o.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                 </div>
-                <div class="mt-2 text-sm text-white font-semibold">
-                  <span>${o.customerName}</span>
+
+                <div class="text-sm font-bold text-white">
+                  ${o.customerName} <span class="text-stone-400 font-normal">• ${o.customerPhone}</span>
                 </div>
-                <div class="text-xs text-slate-300 mt-1 whitespace-pre-line">${o.itemsSummary || 'Standard order'}</div>
-                <div class="text-xs text-slate-500 mt-1">Ref: <span class="font-mono text-slate-400">${o.reference}</span> • Notes: ${o.notes || 'None'}</div>
+
+                <div class="text-xs text-stone-300">
+                  <span class="text-stone-500">Destination:</span> ${o.address || 'Pickup'} 
+                  ${o.deliveryZone ? `<span class="text-amber-400/90 font-medium">(${o.deliveryZone})</span>` : ''}
+                </div>
+
+                <div class="p-3 rounded-2xl bg-[#0c0a09] border border-stone-900 text-xs text-stone-300 whitespace-pre-line font-mono">
+                  ${o.itemsSummary || 'Standard order items'}
+                </div>
+
+                ${o.notes ? `<div class="text-[11px] text-amber-300 italic">Kitchen Note: ${o.notes}</div>` : ''}
               </div>
 
-              <div class="flex items-center gap-4">
+              <!-- Action Controls -->
+              <div class="flex flex-col gap-2.5 flex-shrink-0 min-w-[200px]">
                 <div class="text-right">
-                  <div class="text-sm font-bold text-amber-400">₦${(o.amount || 0).toLocaleString()}</div>
-                  <div class="text-[10px] text-emerald-400 uppercase tracking-wider font-semibold">Paid in Full</div>
+                  <span class="text-stone-500 text-[10px] block uppercase font-bold">Total Paid</span>
+                  <span class="font-extrabold text-amber-400 text-xl font-serif">₦${(Number(o.amount) || 0).toLocaleString()}</span>
                 </div>
 
-                <a href="https://wa.me/${(o.customerPhone || '').replace(/[^0-9]/g, '')}?text=Hi%20${encodeURIComponent(o.customerName)},%20your%20food%20order%20(${encodeURIComponent(o.reference)})%20is%20being%20prepared!" target="_blank" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center gap-1.5 transition">
-                  💬 WhatsApp
+                <!-- Status Controller Buttons -->
+                <div class="grid grid-cols-3 gap-1 bg-[#0c0a09] p-1 rounded-xl border border-stone-800 text-[10px] font-bold text-center">
+                  <button onclick="updateOrderStatus('${o.reference}', 'PREPARING')" class="py-1.5 rounded-lg ${status === 'PREPARING' ? 'bg-amber-500 text-stone-950' : 'text-stone-400 hover:text-white'}">Prepping</button>
+                  <button onclick="updateOrderStatus('${o.reference}', 'DISPATCHED')" class="py-1.5 rounded-lg ${status === 'DISPATCHED' ? 'bg-sky-500 text-stone-950' : 'text-stone-400 hover:text-white'}">Dispatched</button>
+                  <button onclick="updateOrderStatus('${o.reference}', 'DELIVERED')" class="py-1.5 rounded-lg ${status === 'DELIVERED' ? 'bg-emerald-500 text-stone-950' : 'text-stone-400 hover:text-white'}">Done</button>
+                </div>
+
+                <a href="https://wa.me/${waPhone}?text=Hello%20${encodeURIComponent(o.customerName)},%20this%20is%20Cravers%20Kitchen%20regarding%20your%20order%20${encodeURIComponent(o.reference)}" target="_blank" class="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-stone-950 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                  💬 WhatsApp Client
+                </a>
+
+                <a href="/track.html?ref=${encodeURIComponent(o.reference)}" target="_blank" class="py-2 px-3 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 font-semibold text-[11px] text-center transition">
+                  📍 Open Live Radar
                 </a>
               </div>
             </div>
-          `).join('');
-        }
-
+          `;
+        }).join('');
       } catch (err) {
-        console.error('Fetch error:', err);
+        container.innerHTML = `<div class="p-8 text-center text-rose-400">Failed to load orders: ${err.message}</div>`;
       }
     }
 
-    // Initial load and poll every 5 seconds
+    async function updateOrderStatus(ref, status) {
+      try {
+        await fetch('/api/orders/status', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reference: ref, status })
+        });
+        fetchRecords();
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
     fetchRecords();
-    setInterval(fetchRecords, 5000);
+    setInterval(fetchRecords, 15000); // 15-second polling for live kitchen feed
   </script>
 </body>
 </html>

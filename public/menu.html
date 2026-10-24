@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Culinary Menu & Price List • Cravers Smokehouse</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#f59e0b">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-serif { font-family: 'Playfair Display', serif; }
+    .amber-gradient {
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 4px;
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #292524;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-[#0c0a09] text-stone-100 min-h-screen pb-36 antialiased selection:bg-amber-500 selection:text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-[#0c0a09]/95 backdrop-blur-md border-b border-stone-800">
+    <div class="max-w-4xl mx-auto px-5 h-20 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl amber-gradient flex items-center justify-center text-xl shadow-lg border border-amber-300/40">
+          🌯
+        </div>
+        <div>
+          <span class="font-serif font-bold text-white text-base block leading-tight">CRAVERS</span>
+          <span class="text-[9px] tracking-[0.25em] uppercase text-amber-400 font-bold">Menu & Ordering</span>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs font-semibold">
+        <a href="/track.html" class="text-stone-300 hover:text-amber-400 hidden sm:block">Track Order</a>
+        <a href="/about.html" class="text-stone-300 hover:text-amber-400 hidden sm:block">About</a>
+        <a href="/order.html" class="px-4 py-2 rounded-xl amber-gradient text-stone-950 font-bold flex items-center gap-1.5 shadow-md">
+          <span>Checkout Tray</span>
+          <span id="navCartCount" class="bg-black/30 text-white text-[10px] px-1.5 py-0.5 rounded-full font-extrabold">0</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Category Filter Bar -->
+    <div class="max-w-4xl mx-auto px-5 py-3 border-t border-stone-900/80 flex gap-2 overflow-x-auto whitespace-nowrap custom-scrollbar">
+      <button onclick="filterCategory('all')" class="cat-btn active px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-stone-950 transition" data-cat="all">
+        🔥 All Items
+      </button>
+      <button onclick="filterCategory('shawarma')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#141211] border border-stone-800 text-stone-300 hover:border-stone-700 transition" data-cat="shawarma">
+        🌯 Shawarma & Wraps
+      </button>
+      <button onclick="filterCategory('grill')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#141211] border border-stone-800 text-stone-300 hover:border-stone-700 transition" data-cat="grill">
+        🍗 Flame BBQ & Suya
+      </button>
+      <button onclick="filterCategory('bakery')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#141211] border border-stone-800 text-stone-300 hover:border-stone-700 transition" data-cat="bakery">
+        🍩 Doughnuts & Sweets
+      </button>
+      <button onclick="filterCategory('drinks')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#141211] border border-stone-800 text-stone-300 hover:border-stone-700 transition" data-cat="drinks">
+        🥤 Chilled Mocktails
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Menu Grid -->
+  <main class="max-w-4xl mx-auto px-5 mt-6">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <h1 class="text-2xl font-serif font-bold text-white">Full Smokehouse Menu</h1>
+        <p class="text-xs text-stone-400 mt-0.5">Select any dish to choose your spice level and delicious add-ons.</p>
+      </div>
+      <span class="text-xs text-amber-400 font-semibold hidden sm:inline">⚡ 25–40 min Express Dispatch</span>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-4" id="menuGrid">
+      <!-- Item 1 -->
+      <div class="food-item p-4 rounded-3xl bg-[#141211] border border-stone-800 hover:border-amber-500/40 transition-all flex flex-col justify-between cursor-pointer group" data-category="shawarma" onclick="openItemCustomizer('Double Sausage Chicken Shawarma', 4000, 'Juicy shredded chicken breast, 2 beef franks, special garlic cream sauce & crisp spiced slaw.', 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=500')">
+        <div>
+          <div class="h-44 rounded-2xl bg-stone-900 overflow-hidden relative border border-stone-800 mb-3.5">
+            <img src="https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&auto=format&fit=crop&q=80" alt="Shawarma" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-amber-500 text-stone-950 font-bold text-[9px] uppercase tracking-wider">Top Pick</span>
+          </div>
+          <h3 class="font-bold text-white text-base">Double Sausage Chicken Shawarma</h3>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Juicy shredded chicken breast, 2 beef franks, special garlic cream sauce & crisp spiced slaw.</p>
+        </div>
+        <div class="flex items-center justify-between mt-4 pt-3 border-t border-stone-900">
+          <span class="font-serif font-bold text-amber-400 text-base">₦4,000</span>
+          <span class="px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-xs group-hover:bg-amber-500 group-hover:text-stone-950 transition">
+            + Customize & Add
+          </span>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="food-item p-4 rounded-3xl bg-[#141211] border border-stone-800 hover:border-amber-500/40 transition-all flex flex-col justify-between cursor-pointer group" data-category="shawarma" onclick="openItemCustomizer('Jumbo Meat-Mix Shawarma (Cheesy)', 5500, 'Premium tender beef strip chunks & shredded chicken loaded with melted mozzarella.', 'https://images.unsplash.com/photo-1561651823-34feb02250e4?w=500')">
+        <div>
+          <div class="h-44 rounded-2xl bg-stone-900 overflow-hidden relative border border-stone-800 mb-3.5">
+            <img src="https://images.unsplash.com/photo-1561651823-34feb02250e4?w=400&auto=format&fit=crop&q=80" alt="Cheesy Shawarma" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          </div>
+          <h3 class="font-bold text-white text-base">Jumbo Meat-Mix Shawarma (Cheesy)</h3>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Premium tender beef strip chunks & shredded chicken loaded with melted mozzarella cheese.</p>
+        </div>
+        <div class="flex items-center justify-between mt-4 pt-3 border-t border-stone-900">
+          <span class="font-serif font-bold text-amber-400 text-base">₦5,500</span>
+          <span class="px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-xs group-hover:bg-amber-500 group-hover:text-stone-950 transition">
+            + Customize & Add
+          </span>
+        </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="food-item p-4 rounded-3xl bg-[#141211] border border-stone-800 hover:border-amber-500/40 transition-all flex flex-col justify-between cursor-pointer group" data-category="grill" onclick="openItemCustomizer('Smoked BBQ Quarter Chicken & Fries', 4500, 'Flame-kissed chicken quarter dipped in honey-smoked BBQ glaze, paired with seasoned fries & slaw.', 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=500')">
+        <div>
+          <div class="h-44 rounded-2xl bg-stone-900 overflow-hidden relative border border-stone-800 mb-3.5">
+            <img src="https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&auto=format&fit=crop&q=80" alt="BBQ Chicken" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-orange-600 text-white font-bold text-[9px] uppercase tracking-wider">Hickory Wood</span>
+          </div>
+          <h3 class="font-bold text-white text-base">Smoked BBQ Quarter Chicken & Fries</h3>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Flame-kissed chicken quarter dipped in honey-smoked BBQ glaze, paired with seasoned fries & slaw.</p>
+        </div>
+        <div class="flex items-center justify-between mt-4 pt-3 border-t border-stone-900">
+          <span class="font-serif font-bold text-amber-400 text-base">₦4,500</span>
+          <span class="px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-xs group-hover:bg-amber-500 group-hover:text-stone-950 transition">
+            + Customize & Add
+          </span>
+        </div>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="food-item p-4 rounded-3xl bg-[#141211] border border-stone-800 hover:border-amber-500/40 transition-all flex flex-col justify-between cursor-pointer group" data-category="grill" onclick="openItemCustomizer('Artisan Beef Suya Platter', 3500, 'Tender flank beef grilled over hot coals with yaji pepper spices, fresh red onions & tomatoes.', 'https://images.unsplash.com/photo-1544025162-d76694265947?w=500')">
+        <div>
+          <div class="h-44 rounded-2xl bg-stone-900 overflow-hidden relative border border-stone-800 mb-3.5">
+            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=400&auto=format&fit=crop&q=80" alt="Suya Platter" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          </div>
+          <h3 class="font-bold text-white text-base">Artisan Beef Suya Platter</h3>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Tender flank beef grilled over hot coals with yaji pepper spices, fresh red onions & tomatoes.</p>
+        </div>
+        <div class="flex items-center justify-between mt-4 pt-3 border-t border-stone-900">
+          <span class="font-serif font-bold text-amber-400 text-base">₦3,500</span>
+          <span class="px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-xs group-hover:bg-amber-500 group-hover:text-stone-950 transition">
+            + Customize & Add
+          </span>
+        </div>
+      </div>
+
+      <!-- Item 5 -->
+      <div class="food-item p-4 rounded-3xl bg-[#141211] border border-stone-800 hover:border-amber-500/40 transition-all flex flex-col justify-between cursor-pointer group" data-category="bakery" onclick="openItemCustomizer('Gourmet Doughnut Box (4-Pack)', 4800, 'Ultra fluffy brioche doughnuts: 2 Salted Caramel Glaze & 2 Belgian Chocolate Ganache.', 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500')">
+        <div>
+          <div class="h-44 rounded-2xl bg-stone-900 overflow-hidden relative border border-stone-800 mb-3.5">
+            <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&auto=format&fit=crop&q=80" alt="Doughnut Box" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-amber-500 text-stone-950 font-bold text-[9px] uppercase tracking-wider">Bakery Fresh</span>
+          </div>
+          <h3 class="font-bold text-white text-base">Gourmet Doughnut Box (4-Pack)</h3>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Ultra fluffy brioche doughnuts: 2 Salted Caramel Glaze & 2 Belgian Chocolate Ganache.</p>
+        </div>
+        <div class="flex items-center justify-between mt-4 pt-3 border-t border-stone-900">
+          <span class="font-serif font-bold text-amber-400 text-base">₦4,800</span>
+          <span class="px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-xs group-hover:bg-amber-500 group-hover:text-stone-950 transition">
+            + Customize & Add
+          </span>
+        </div>
+      </div>
+
+      <!-- Item 6 -->
+      <div class="food-item p-4 rounded-3xl bg-[#141211] border border-stone-800 hover:border-amber-500/40 transition-all flex flex-col justify-between cursor-pointer group" data-category="drinks" onclick="openItemCustomizer('Signature Chapman Mocktail (Chilled)', 1800, 'Classic Nigerian blend of sparkling citrus, Angostura aromatic bitters, cucumber & fresh mint.', 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500')">
+        <div>
+          <div class="h-44 rounded-2xl bg-stone-900 overflow-hidden relative border border-stone-800 mb-3.5">
+            <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&auto=format&fit=crop&q=80" alt="Chapman Mocktail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          </div>
+          <h3 class="font-bold text-white text-base">Signature Chapman Mocktail (Chilled)</h3>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Classic Nigerian blend of sparkling citrus, Angostura aromatic bitters, cucumber & fresh mint.</p>
+        </div>
+        <div class="flex items-center justify-between mt-4 pt-3 border-t border-stone-900">
+          <span class="font-serif font-bold text-amber-400 text-base">₦1,800</span>
+          <span class="px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-xs group-hover:bg-amber-500 group-hover:text-stone-950 transition">
+            + Customize & Add
+          </span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ITEM CUSTOMIZER DRAWER -->
+  <div id="customizerModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-[#141211] border border-stone-800 rounded-t-3xl sm:rounded-3xl max-w-md w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+      <div class="h-40 w-full relative overflow-hidden bg-stone-900">
+        <img id="custItemImg" src="" class="w-full h-full object-cover">
+        <button onclick="closeItemCustomizer()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center font-bold text-sm">✕</button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-4 text-xs custom-scrollbar">
+        <div>
+          <h3 id="custItemName" class="font-bold text-white text-base">Item Name</h3>
+          <p id="custItemDesc" class="text-stone-400 text-[11px] mt-0.5">Description</p>
+          <span id="custItemBasePrice" class="font-extrabold text-amber-400 text-sm block mt-1">₦4,000</span>
+        </div>
+
+        <!-- Spice Preference -->
+        <div class="border-t border-stone-900 pt-3">
+          <label class="block text-stone-300 font-bold text-[11px] mb-2">Spice Preference</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="selectSpice('Mild')" class="spice-btn active py-2 rounded-xl border border-amber-500 bg-amber-500/10 text-amber-400 font-semibold text-center" data-spice="Mild">
+              🌱 Mild
+            </button>
+            <button type="button" onclick="selectSpice('Spicy')" class="spice-btn py-2 rounded-xl border border-stone-800 bg-[#120f0e] text-stone-300 font-semibold text-center" data-spice="Spicy">
+              🌶️ Spicy
+            </button>
+            <button type="button" onclick="selectSpice('Suya Hot')" class="spice-btn py-2 rounded-xl border border-stone-800 bg-[#120f0e] text-stone-300 font-semibold text-center" data-spice="Suya Hot">
+              🔥 Suya Hot
+            </button>
+          </div>
+        </div>
+
+        <!-- Add-on Extras -->
+        <div class="border-t border-stone-900 pt-3">
+          <label class="block text-stone-300 font-bold text-[11px] mb-2">Add Delicious Extras</label>
+          <div class="space-y-2">
+            <label class="flex items-center justify-between p-2.5 rounded-xl border border-stone-800/80 bg-[#120f0e] cursor-pointer hover:border-stone-700">
+              <div class="flex items-center gap-2.5">
+                <input type="checkbox" value="Extra Jumbo Sausage" data-addon-price="500" class="addon-check rounded text-amber-500 focus:ring-0">
+                <span class="text-white text-xs">Extra Jumbo Beef Frank</span>
+              </div>
+              <span class="text-amber-400 font-semibold text-xs">+₦500</span>
+            </label>
+
+            <label class="flex items-center justify-between p-2.5 rounded-xl border border-stone-800/80 bg-[#120f0e] cursor-pointer hover:border-stone-700">
+              <div class="flex items-center gap-2.5">
+                <input type="checkbox" value="Melted Mozzarella Cheese" data-addon-price="800" class="addon-check rounded text-amber-500 focus:ring-0">
+                <span class="text-white text-xs">Melted Mozzarella Cheese</span>
+              </div>
+              <span class="text-amber-400 font-semibold text-xs">+₦800</span>
+            </label>
+
+            <label class="flex items-center justify-between p-2.5 rounded-xl border border-stone-800/80 bg-[#120f0e] cursor-pointer hover:border-stone-700">
+              <div class="flex items-center gap-2.5">
+                <input type="checkbox" value="Spiced Fried Plantain (Dodo)" data-addon-price="600" class="addon-check rounded text-amber-500 focus:ring-0">
+                <span class="text-white text-xs">Spiced Fried Plantain (Dodo)</span>
+              </div>
+              <span class="text-amber-400 font-semibold text-xs">+₦600</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Quantity -->
+        <div class="border-t border-stone-900 pt-3 flex items-center justify-between">
+          <span class="font-bold text-white text-xs">Quantity</span>
+          <div class="flex items-center gap-3 bg-[#1c1815] p-1 rounded-xl border border-stone-800">
+            <button type="button" onclick="adjustCustomQty(-1)" class="w-7 h-7 rounded-lg bg-stone-800 text-white font-bold flex items-center justify-center hover:bg-stone-700">-</button>
+            <span id="custQtyText" class="font-bold text-white text-sm w-5 text-center">1</span>
+            <button type="button" onclick="adjustCustomQty(1)" class="w-7 h-7 rounded-lg bg-stone-800 text-white font-bold flex items-center justify-center hover:bg-stone-700">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-stone-900 bg-[#161311]">
+        <button onclick="commitCustomizedItem()" class="w-full py-3.5 rounded-2xl amber-gradient text-stone-950 font-bold text-xs uppercase tracking-wider shadow-lg hover:brightness-105 active:scale-[0.99] transition">
+          Add to Food Tray (<span id="custFinalTotal">₦4,000</span>)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky Tray Bar -->
+  <div id="stickyTrayBar" class="fixed bottom-0 inset-x-0 p-4 bg-[#141211]/95 backdrop-blur-md border-t border-stone-800 z-40">
+    <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-center text-xl relative">
+          🛍️
+          <span id="trayBadgeCount" class="absolute -top-1.5 -right-1.5 bg-amber-500 text-stone-950 text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+        </div>
+        <div>
+          <span class="text-[10px] text-stone-400 block uppercase tracking-wider font-semibold">Your Food Tray</span>
+          <span id="trayTotalDisplay" class="font-extrabold text-white text-base">₦0</span>
+        </div>
+      </div>
+
+      <a href="/order.html" class="py-3 px-6 rounded-2xl amber-gradient text-stone-950 font-bold text-xs tracking-wide shadow-xl shadow-amber-500/20 hover:brightness-105 active:scale-95 transition flex items-center gap-2">
+        <span>Review Order & Pay →</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem('cravers_cart') || '[]');
+    let activeItem = null;
+    let customSelectedSpice = "Mild";
+    let customQty = 1;
+
+    function saveCart() {
+      localStorage.setItem('cravers_cart', JSON.stringify(cart));
+      updateTrayUI();
+    }
+
+    function updateTrayUI() {
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      document.getElementById('trayBadgeCount').innerText = count;
+      document.getElementById('navCartCount').innerText = count;
+      document.getElementById('trayTotalDisplay').innerText = `₦${total.toLocaleString()}`;
+    }
+
+    function filterCategory(cat) {
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#141211] border border-stone-800 text-stone-300 hover:border-stone-700 transition';
+      });
+      const activeBtn = document.querySelector(`.cat-btn[data-cat="${cat}"]`);
+      if (activeBtn) {
+        activeBtn.className = 'cat-btn active px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-stone-950 transition';
+      }
+
+      document.querySelectorAll('.food-item').forEach(card => {
+        if (cat === 'all' || card.dataset.category === cat) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    function openItemCustomizer(name, basePrice, desc, imgUrl) {
+      activeItem = { name, basePrice, desc, imgUrl };
+      customSelectedSpice = "Mild";
+      customQty = 1;
+
+      document.getElementById('custItemName').innerText = name;
+      document.getElementById('custItemDesc').innerText = desc;
+      document.getElementById('custItemBasePrice').innerText = `₦${basePrice.toLocaleString()}`;
+      document.getElementById('custItemImg').src = imgUrl;
+      document.getElementById('custQtyText').innerText = '1';
+
+      document.querySelectorAll('.addon-check').forEach(cb => cb.checked = false);
+      selectSpice('Mild');
+      calculateCustomTotal();
+
+      document.getElementById('customizerModal').classList.remove('hidden');
+    }
+
+    function closeItemCustomizer() {
+      document.getElementById('customizerModal').classList.add('hidden');
+    }
+
+    function selectSpice(spice) {
+      customSelectedSpice = spice;
+      document.querySelectorAll('.spice-btn').forEach(b => {
+        b.className = 'spice-btn py-2 rounded-xl border border-stone-800 bg-[#120f0e] text-stone-300 font-semibold text-center';
+      });
+      const target = document.querySelector(`.spice-btn[data-spice="${spice}"]`);
+      if (target) {
+        target.className = 'spice-btn active py-2 rounded-xl border border-amber-500 bg-amber-500/10 text-amber-400 font-semibold text-center';
+      }
+    }
+
+    function adjustCustomQty(delta) {
+      customQty = Math.max(1, customQty + delta);
+      document.getElementById('custQtyText').innerText = customQty;
+      calculateCustomTotal();
+    }
+
+    document.querySelectorAll('.addon-check').forEach(cb => {
+      cb.addEventListener('change', calculateCustomTotal);
+    });
+
+    function calculateCustomTotal() {
+      if (!activeItem) return;
+      let addonSum = 0;
+      document.querySelectorAll('.addon-check:checked').forEach(cb => {
+        addonSum += Number(cb.dataset.addonPrice);
+      });
+      const singleTotal = activeItem.basePrice + addonSum;
+      const grandTotal = singleTotal * customQty;
+      document.getElementById('custFinalTotal').innerText = `₦${grandTotal.toLocaleString()}`;
+      return { singleTotal, grandTotal };
+    }
+
+    function commitCustomizedItem() {
+      if (!activeItem) return;
+
+      const { singleTotal } = calculateCustomTotal();
+      const selectedAddons = [];
+      document.querySelectorAll('.addon-check:checked').forEach(cb => {
+        selectedAddons.push(cb.value);
+      });
+
+      const extrasString = [
+        `Spice: ${customSelectedSpice}`,
+        ...selectedAddons
+      ].join(', ');
+
+      const existingIndex = cart.findIndex(i => i.name === activeItem.name && i.extras === extrasString);
+      if (existingIndex > -1) {
+        cart[existingIndex].quantity += customQty;
+      } else {
+        cart.push({
+          name: activeItem.name,
+          price: singleTotal,
+          extras: extrasString,
+          quantity: customQty
+        });
+      }
+
+      closeItemCustomizer();
+      saveCart();
+    }
+
+    updateTrayUI();
+  </script>
+</body>
+</html>

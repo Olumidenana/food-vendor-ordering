@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Atelier & Smokehouse Heritage • Cravers Grill</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#f59e0b">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-serif { font-family: 'Playfair Display', serif; }
+    .amber-gradient {
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+    }
+  </style>
+</head>
+<body class="bg-[#0c0a09] text-stone-100 min-h-screen antialiased selection:bg-amber-500 selection:text-black">
+
+  <!-- Header -->
+  <header class="border-b border-stone-800 bg-[#0c0a09]/95 sticky top-0 z-40 backdrop-blur-md">
+    <div class="max-w-4xl mx-auto px-5 h-20 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl amber-gradient flex items-center justify-center text-xl shadow-lg border border-amber-300/40">
+          🌯
+        </div>
+        <div>
+          <span class="font-serif font-bold text-white text-base block leading-tight">CRAVERS</span>
+          <span class="text-[9px] tracking-[0.25em] uppercase text-amber-400 font-bold">The Smokehouse Heritage</span>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-5 text-xs font-semibold">
+        <a href="/menu.html" class="text-stone-300 hover:text-amber-400">Menu</a>
+        <a href="/track.html" class="text-stone-300 hover:text-amber-400">Track Route</a>
+        <a href="/order.html" class="px-4 py-2 rounded-xl amber-gradient text-stone-950 font-bold">
+          Order Food
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-5 pt-12 pb-20">
+    <!-- Story Hero -->
+    <div class="text-center max-w-2xl mx-auto mb-16">
+      <span class="text-[10px] tracking-[0.3em] uppercase text-amber-400 font-bold block mb-2">Our Culinary Heritage</span>
+      <h1 class="text-3xl md:text-5xl font-serif font-bold text-white tracking-tight">The Art of Wood-Smoke & Spice</h1>
+      <p class="text-xs md:text-sm text-stone-400 mt-4 leading-relaxed">
+        Founded on an obsession with authentic charcoal heat and slow wood-smoked meats, Cravers Smokehouse was built to bring world-class pitmaster standards to Nigerian street food and executive catering.
+      </p>
+    </div>
+
+    <!-- The 3 Smokehouse Pillars -->
+    <div class="grid md:grid-cols-3 gap-6 mb-16">
+      <div class="p-6 rounded-3xl bg-[#141211] border border-stone-800">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-xl mb-4 font-bold">
+          🪵
+        </div>
+        <h3 class="font-bold text-white text-base mb-2">Slow Hardwood Smoke</h3>
+        <p class="text-xs text-stone-400 leading-relaxed">
+          We cure and smoke our flank steaks, chicken quarters, and brisket over natural hickory and oak logs for up to 14 hours for deeply infused aroma and melt-in-the-mouth tenderness.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-3xl bg-[#141211] border border-stone-800">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-xl mb-4 font-bold">
+          🥩
+        </div>
+        <h3 class="font-bold text-white text-base mb-2">100% Halal Prime Cuts</h3>
+        <p class="text-xs text-stone-400 leading-relaxed">
+          No fillers, zero artificial tenderizers, and no imported scrap meats. We source certified fresh poultry and prime beef cuts daily from local ethical farms.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-3xl bg-[#141211] border border-stone-800">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-xl mb-4 font-bold">
+          🛵
+        </div>
+        <h3 class="font-bold text-white text-base mb-2">Thermal Heat Dispatch</h3>
+        <p class="text-xs text-stone-400 leading-relaxed">
+          Our specialized delivery fleet operates express corridors with thermal insulated bags, ensuring every shawarma arrives steaming hot in under 40 minutes.
+        </p>
+      </div>
+    </div>
+
+    <!-- Master Pitmasters -->
+    <div class="p-8 rounded-3xl bg-[#141211] border border-stone-800 mb-16">
+      <div class="flex flex-col md:flex-row gap-8 items-center">
+        <div class="w-36 h-36 md:w-48 md:h-48 rounded-3xl overflow-hidden border border-amber-500/30 flex-shrink-0">
+          <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=400&auto=format&fit=crop&q=80" alt="Executive Chef" class="w-full h-full object-cover">
+        </div>
+        <div>
+          <span class="text-[10px] tracking-widest uppercase text-amber-400 font-bold block mb-1">Executive Pitmaster</span>
+          <h2 class="text-2xl font-serif font-bold text-white mb-2">Chef Dapo Olumide</h2>
+          <p class="text-xs text-stone-400 leading-relaxed mb-4">
+            "We don't believe in rushed food. Great barbecue and authentic shawarma require patience, wood, and respect for the cut. When our client opens their thermal wrap, the aroma should instantly take over the room."
+          </p>
+          <div class="flex items-center gap-4 text-xs font-bold text-stone-300">
+            <span>• 12+ Years Culinary Flame Craft</span>
+            <span>• Over 250,000 Shawarmas Served</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIP & Event Catering Section -->
+    <div class="p-8 rounded-3xl bg-gradient-to-r from-[#1c1815] to-[#141211] border border-amber-500/40 text-center">
+      <span class="text-[10px] tracking-[0.3em] uppercase text-amber-400 font-bold block mb-2">Corporate & VIP Events</span>
+      <h2 class="text-2xl md:text-4xl font-serif font-bold text-white mb-3">Live Flame Station for Your Guests</h2>
+      <p class="text-xs text-stone-400 max-w-lg mx-auto mb-6 leading-relaxed">
+        Planning a birthday, office party, or wedding afterparty in Osun or Lagos? We deploy our signature live mobile grill station, serving hot jumbo shawarmas and BBQ platters on-site.
+      </p>
+      <a href="https://wa.me/2348149640122?text=Hi%20Cravers%20Kitchen,%20I%20would%20like%20to%20inquire%20about%20a%20private%20event%20catering%20package" target="_blank" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl amber-gradient text-stone-950 font-bold text-xs uppercase tracking-wider hover:brightness-105 transition shadow-xl">
+        <span>💬 Inquire About VIP Catering (08149640122)</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-10 text-center text-xs text-stone-500 bg-[#080706] border-t border-stone-900">
+    <div class="max-w-4xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <span class="font-serif font-bold text-white">CRAVERS SMOKEHOUSE</span>
+      <span>© 2026 Cravers Smokehouse Ltd. All rights reserved.</span>
+      <div class="flex gap-4 text-stone-400">
+        <a href="/menu.html" class="hover:text-white">Menu</a>
+        <a href="/track.html" class="hover:text-white">Track Route</a>
+        <a href="/order.html" class="hover:text-amber-400 font-bold">Order</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

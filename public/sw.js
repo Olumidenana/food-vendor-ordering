@@ -1,5 +1,5 @@
 // Cravers Grill Service Worker (Network-First Strategy for Instant Live Updates)
-const CACHE_NAME = 'cravers-v2';
+const CACHE_NAME = 'cravers-v3';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();

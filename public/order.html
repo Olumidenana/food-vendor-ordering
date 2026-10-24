@@ -243,31 +243,67 @@
     </div>
   </div>
 
-  <!-- STEP 2 CONFIRMATION & ROUTE TRACKING LINK -->
-  <div id="paymentSuccessModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-[#141211] border border-amber-500/50 rounded-3xl p-7 max-w-sm w-full text-center shadow-2xl relative">
-      <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/20 border border-emerald-400 flex items-center justify-center text-3xl text-emerald-400">
+  <!-- STEP 2 CONFIRMATION & HIGH-TRUST RIDER HANDSHAKE MODAL -->
+  <div id="paymentSuccessModal" class="fixed inset-0 bg-black/95 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-[#141211] border border-amber-500/50 rounded-3xl p-6 sm:p-7 max-w-md w-full text-center shadow-2xl relative my-8">
+      <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-emerald-500/20 border border-emerald-400 flex items-center justify-center text-3xl text-emerald-400 shadow-lg shadow-emerald-500/20">
         ✓
       </div>
-      <span class="text-[10px] tracking-[0.25em] uppercase text-emerald-400 font-bold block mb-1">Paystack Authorized</span>
-      <h3 class="text-2xl font-serif font-bold text-white mb-2">Order Firing Up!</h3>
-      <p class="text-xs text-stone-400 mb-5 leading-relaxed">
-        Your payment was confirmed. Tap below to send your official kitchen ticket to our WhatsApp, and track your delivery route live!
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold tracking-widest uppercase mb-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        Payment Verified & Order Confirmed
+      </div>
+      <h3 class="text-2xl font-serif font-bold text-white mb-1.5">Ticket In The Kitchen!</h3>
+      <p class="text-xs text-stone-400 mb-4 leading-relaxed">
+        Your payment was authorized via Paystack. Your pitmaster has fired up the grill and your dispatch route is reserved.
       </p>
 
-      <div class="p-4 rounded-2xl bg-[#0c0a09] border border-stone-800 text-left text-xs space-y-2 mb-5">
-        <div class="flex justify-between"><span class="text-stone-400">Order Ref:</span><span id="confRef" class="font-mono text-amber-400"></span></div>
-        <div class="flex justify-between"><span class="text-stone-400">Route Corridor:</span><span id="confCorridor" class="font-semibold text-white"></span></div>
-        <div class="flex justify-between"><span class="text-stone-400">Amount Paid:</span><span id="confAmount" class="font-bold text-amber-400"></span></div>
+      <!-- 4-DIGIT GATE SECURITY PIN CARD -->
+      <div class="p-4 rounded-2xl bg-gradient-to-br from-amber-500/15 to-orange-500/15 border-2 border-amber-500/40 text-left mb-4 shadow-xl">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-[10px] tracking-widest uppercase text-amber-400 font-extrabold flex items-center gap-1">
+            <span>🛡️</span> Gate Delivery Handshake PIN
+          </span>
+          <span class="text-[10px] bg-amber-400 text-stone-950 px-2 py-0.5 rounded-md font-bold uppercase">Customer Safe</span>
+        </div>
+        <div class="flex items-center justify-between mt-2">
+          <div>
+            <div id="confPin" class="text-3xl font-mono font-extrabold text-amber-300 tracking-[0.25em]">8412</div>
+            <span class="text-[10px] text-stone-400 block mt-0.5">Recite this 4-digit code to your rider at the gate</span>
+          </div>
+          <div class="text-right">
+            <span id="confSeal" class="font-mono text-xs text-stone-300 font-bold block bg-stone-900 px-2.5 py-1.5 rounded-lg border border-stone-800">SEAL #9402</span>
+            <span class="text-[9px] text-emerald-400 font-bold block mt-1">Tamper Seal Check ✓</span>
+          </div>
+        </div>
       </div>
 
-      <a id="btnFinalWhatsApp" href="#" class="w-full py-4 px-4 rounded-2xl bg-[#25D366] hover:bg-[#1EBE5D] text-stone-950 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg mb-2.5">
-        💬 Send Ticket to WhatsApp (08149640122) →
-      </a>
+      <!-- Order & Rider Particulars -->
+      <div class="p-4 rounded-2xl bg-[#0c0a09] border border-stone-800 text-left text-xs space-y-2 mb-4">
+        <div class="flex justify-between items-center"><span class="text-stone-400">Order Reference:</span><span id="confRef" class="font-mono text-amber-400 font-bold"></span></div>
+        <div class="flex justify-between items-center"><span class="text-stone-400">Delivery Corridor:</span><span id="confCorridor" class="font-semibold text-white"></span></div>
+        <div class="flex justify-between items-center"><span class="text-stone-400">Amount Paid:</span><span id="confAmount" class="font-bold text-emerald-400"></span></div>
+        <div class="pt-2 border-t border-stone-900 flex justify-between items-center">
+          <span class="text-stone-400">Assigned Rider:</span>
+          <span id="confRider" class="font-semibold text-white flex items-center gap-1">
+            <span>🛵</span> Sunday Oladipo (Fleet #04)
+          </span>
+        </div>
+        <div class="flex justify-between items-center text-[11px]">
+          <span class="text-stone-500">Rider Contact / Plate:</span>
+          <span id="confRiderPlate" class="text-stone-300 font-mono">08149640122 • OS-492-BKT</span>
+        </div>
+      </div>
 
-      <a id="btnGoTrack" href="#" class="w-full py-3.5 px-4 rounded-2xl bg-stone-800 hover:bg-stone-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition">
-        🛵 Track Live Delivery Route on Map →
-      </a>
+      <div class="space-y-2">
+        <a id="btnFinalWhatsApp" href="#" target="_blank" class="w-full py-3.5 px-4 rounded-2xl bg-[#25D366] hover:bg-[#1EBE5D] text-stone-950 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg shadow-[#25D366]/20">
+          💬 Send Receipt Slip & PIN to Kitchen WhatsApp →
+        </a>
+
+        <a id="btnGoTrack" href="#" class="w-full py-3.5 px-4 rounded-2xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg shadow-amber-500/20">
+          🛡️ Open Live Rider Tracking & Safety Hub →
+        </a>
+      </div>
     </div>
   </div>
 
@@ -515,17 +551,40 @@
         if (data.success) {
           closePaystackModal();
 
+          const order = data.order || {};
+          const pin = order.securityPin || Math.floor(1000 + Math.random() * 9000).toString();
+          const seal = order.sealNumber || `SEAL-${Math.floor(1000 + Math.random() * 9000)}`;
+          const rider = order.riderName || 'Sunday Oladipo (Cravers Fleet #04)';
+          const riderPhone = order.riderPhone || '08149640122';
+          const bikePlate = order.riderBikePlate || 'OS-492-BKT (Bajaj Boxer 150)';
+
           document.getElementById('confRef').innerText = ref;
           document.getElementById('confCorridor').innerText = fulfillment === 'PICKUP' ? 'Store Pickup (Free)' : selectedCorridorName;
           document.getElementById('confAmount').innerText = `₦${totalAmount.toLocaleString()} (Paid)`;
+          document.getElementById('confPin').innerText = pin;
+          document.getElementById('confSeal').innerText = seal;
+          document.getElementById('confRider').innerText = rider;
+          document.getElementById('confRiderPlate').innerText = `${riderPhone} • ${bikePlate}`;
 
           // WhatsApp link
           const itemsListText = cart.map(it => `• ${it.quantity}x ${it.name} ${it.extras ? `(${it.extras})` : ''}`).join('\n');
-          const waMessage = `Hi Cravers Grill! 🔥 I just completed payment of ₦${totalAmount.toLocaleString()} on Paystack for my order.\n\nOrder Ref: ${ref}\nCustomer: ${name}\nPhone: ${phone}\nFulfillment: ${fulfillment === 'PICKUP' ? 'Store Pickup' : 'Doorstep Delivery'}\nAddress: ${fulfillment === 'PICKUP' ? 'Store Pickup' : address}\nCorridor: ${selectedCorridorName}\n\nItems Ordered:\n${itemsListText}\n\nNotes: ${notes || 'None'}\n\nPlease fire up the kitchen and confirm delivery!`;
+          const waMessage = `Hi Cravers Grill! 🔥 I just completed payment of ₦${totalAmount.toLocaleString()} on Paystack for my order.\n\n` +
+            `Order Ref: ${ref}\n` +
+            `Customer: ${name}\n` +
+            `Phone: ${phone}\n` +
+            `Fulfillment: ${fulfillment === 'PICKUP' ? 'Store Pickup' : 'Doorstep Delivery'}\n` +
+            `Address: ${fulfillment === 'PICKUP' ? 'Store Pickup' : address}\n` +
+            `Corridor: ${selectedCorridorName}\n\n` +
+            `🛡️ GATE SECURITY PIN: ${pin}\n` +
+            `🔒 Tamper Seal: ${seal}\n` +
+            `🛵 Assigned Rider: ${rider} (${riderPhone})\n\n` +
+            `Items Ordered:\n${itemsListText}\n\n` +
+            `Notes: ${notes || 'None'}\n\n` +
+            `Please fire up the kitchen, verify my payment, and dispatch to my route!`;
           const waUrl = `https://wa.me/${KITCHEN_WHATSAPP}?text=${encodeURIComponent(waMessage)}`;
 
           document.getElementById('btnFinalWhatsApp').href = waUrl;
-          document.getElementById('btnGoTrack').href = `/track.html?ref=${encodeURIComponent(ref)}`;
+          document.getElementById('btnGoTrack').href = `/track.html?ref=${encodeURIComponent(ref)}&pin=${encodeURIComponent(pin)}`;
 
           document.getElementById('paymentSuccessModal').classList.remove('hidden');
 

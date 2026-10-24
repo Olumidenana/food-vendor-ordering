@@ -134,6 +134,15 @@
                   ${o.deliveryZone ? `<span class="text-amber-400/90 font-medium">(${o.deliveryZone})</span>` : ''}
                 </div>
 
+                <div class="flex items-center gap-2 pt-1">
+                  <span class="px-2 py-0.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 font-mono font-bold text-xs">
+                    🛡️ Gate PIN: ${o.securityPin || '8412'}
+                  </span>
+                  <span class="px-2 py-0.5 rounded-lg bg-stone-900 border border-stone-800 text-stone-400 font-mono text-[11px]">
+                    🔒 ${o.sealNumber || 'SEAL #9402'}
+                  </span>
+                </div>
+
                 <div class="p-3 rounded-2xl bg-[#0c0a09] border border-stone-900 text-xs text-stone-300 whitespace-pre-line font-mono">
                   ${o.itemsSummary || 'Standard order items'}
                 </div>

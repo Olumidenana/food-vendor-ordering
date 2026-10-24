@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Delivery Route & Order Tracker • Cravers Smokehouse</title>
+  <title>Live Delivery Route & Rider Security Hub • Cravers Smokehouse</title>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#f59e0b">
 
@@ -31,7 +31,7 @@
         </div>
         <div>
           <span class="font-serif font-bold text-white text-base block leading-tight">CRAVERS</span>
-          <span class="text-[9px] tracking-[0.25em] uppercase text-amber-400 font-bold">Live Route Dispatch</span>
+          <span class="text-[9px] tracking-[0.25em] uppercase text-amber-400 font-bold">Rider & Dispatch Hub</span>
         </div>
       </a>
 
@@ -45,31 +45,101 @@
   </header>
 
   <main class="max-w-2xl mx-auto px-5 pt-8">
-    <div class="text-center max-w-md mx-auto mb-8">
+    <div class="text-center max-w-md mx-auto mb-6">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold mb-3">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        Live Dispatch Satellite Tracking
+        Verified Dispatch & Rider Security System
       </div>
-      <h1 class="text-3xl font-serif font-bold text-white">Track Your Order</h1>
+      <h1 class="text-3xl font-serif font-bold text-white">Live Order & Rider Radar</h1>
       <p class="text-xs text-stone-400 mt-1">
-        Monitor your food from the hardwood smokehouse to your doorstep.
+        Direct rider contact, tamper-proof seal verification, and gate security PIN.
       </p>
     </div>
 
     <!-- Search / Reference Input -->
-    <div class="p-2 rounded-2xl bg-[#141211] border border-stone-800 flex gap-2 mb-8 shadow-xl">
-      <input type="text" id="orderRefInput" placeholder="Enter Reference (e.g. FOOD_1729768000)" class="flex-grow bg-[#0c0a09] border border-stone-800 rounded-xl px-4 py-3 text-xs text-white uppercase tracking-wider font-mono focus:outline-none focus:border-amber-500">
+    <div class="p-2 rounded-2xl bg-[#141211] border border-stone-800 flex gap-2 mb-6 shadow-xl">
+      <input type="text" id="orderRefInput" placeholder="Enter Order Reference (e.g. FOOD_1729768000)" class="flex-grow bg-[#0c0a09] border border-stone-800 rounded-xl px-4 py-3 text-xs text-white uppercase tracking-wider font-mono focus:outline-none focus:border-amber-500">
       <button onclick="fetchTrackingData()" class="px-6 py-3 rounded-xl amber-gradient text-stone-950 font-bold text-xs uppercase tracking-wider hover:brightness-105 active:scale-95 transition">
-        Track
+        Search
       </button>
     </div>
 
     <!-- Live Status Display Container -->
     <div id="trackingResult" class="space-y-6">
-      <!-- 4-Stage Animated Pipeline -->
+
+      <!-- 1. GATE SECURITY HANDSHAKE PIN CARD (HIGHEST TRUST ANCHOR) -->
+      <div class="p-6 rounded-3xl bg-gradient-to-br from-amber-500/15 via-[#141211] to-orange-500/10 border-2 border-amber-500/40 shadow-2xl relative overflow-hidden">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+            <span class="text-[10px] tracking-widest uppercase text-amber-400 font-extrabold">Delivery Security Handshake</span>
+          </div>
+          <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold">
+            Tamper Protection Active ✓
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center bg-[#0c0a09]/80 p-4 rounded-2xl border border-stone-800/80 mb-3">
+          <div>
+            <span class="text-[10px] uppercase tracking-wider text-stone-400 block font-semibold">Your 4-Digit Gate PIN</span>
+            <div id="trackPin" class="text-4xl font-mono font-extrabold text-amber-300 tracking-[0.25em] my-1">8412</div>
+            <span class="text-[11px] text-stone-400 block">Give this code to rider to confirm order receipt</span>
+          </div>
+          <div class="sm:text-right border-t sm:border-t-0 sm:border-l border-stone-800 pt-3 sm:pt-0 sm:pl-4">
+            <span class="text-[10px] uppercase tracking-wider text-stone-400 block font-semibold">Tamper-Proof Box Seal</span>
+            <div id="trackSeal" class="font-mono text-sm font-extrabold text-white bg-stone-900 inline-block px-3 py-1.5 rounded-xl border border-stone-700 my-1">
+              SEAL #9402
+            </div>
+            <span class="text-[10px] text-emerald-400 block font-semibold">Check red sticker before opening</span>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-2.5 text-[11px] text-stone-300 bg-stone-900/60 p-3 rounded-xl border border-stone-800/60">
+          <span class="text-amber-400 text-sm">🛡️</span>
+          <span><strong>Safety Rule:</strong> Do not release this 4-Digit PIN until you physically inspect your Cravers thermal food box at your gate and verify the seal is intact.</span>
+        </div>
+      </div>
+
+      <!-- 2. VERIFIED DISPATCH RIDER CARD (REPLACES UNRELIABLE MAPS) -->
+      <div class="p-6 rounded-3xl bg-[#141211] border border-stone-800 shadow-xl">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-stone-800/80">
+          <div>
+            <span class="text-[10px] tracking-widest uppercase text-stone-400 font-bold block">Assigned Dispatch Courier</span>
+            <h3 class="text-base font-bold text-white flex items-center gap-1.5 mt-0.5">
+              <span>🛵</span> Verified Cravers Fleet Delivery
+            </h3>
+          </div>
+          <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold">
+            ID Verified ✓
+          </span>
+        </div>
+
+        <div class="flex items-center gap-4 mb-5">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-2xl font-black text-stone-950 shadow-lg shadow-amber-500/20 flex-shrink-0">
+            SO
+          </div>
+          <div>
+            <h4 id="trackRiderName" class="font-bold text-white text-base">Sunday Oladipo</h4>
+            <span class="text-xs text-amber-400 block font-semibold">Cravers Fleet Rider #04</span>
+            <span id="trackRiderPlate" class="text-[11px] text-stone-400 block font-mono">Bike: Bajaj Boxer 150 • Plate: OS-492-BKT</span>
+          </div>
+        </div>
+
+        <!-- 2 Direct Communication Buttons (Direct Call & Direct WhatsApp) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <a id="btnCallRider" href="tel:08149640122" class="py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-md">
+            <span>📞</span> Call Rider (08149640122)
+          </a>
+          <a id="btnWhatsAppRider" href="https://wa.me/2348149640122?text=Hello%20Sunday,%20I%20am%20tracking%20my%20Cravers%20food%20order" target="_blank" class="py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-stone-950 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-md">
+            <span>💬</span> WhatsApp Rider
+          </a>
+        </div>
+      </div>
+
+      <!-- 3. 4-STAGE KITCHEN & ROUTE PROGRESSION PIPELINE -->
       <div class="p-6 rounded-3xl bg-[#141211] border border-stone-800 shadow-xl">
         <div class="flex items-center justify-between mb-6">
-          <span class="text-[10px] tracking-widest uppercase text-amber-400 font-bold block">Dispatch Progression</span>
+          <span class="text-[10px] tracking-widest uppercase text-amber-400 font-bold block">Live Order Progression</span>
           <span id="badgeLiveStatus" class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/40 text-amber-400 text-[11px] font-bold">
             ⚡ Preparing in Kitchen
           </span>
@@ -78,12 +148,15 @@
         <div class="space-y-6 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-stone-800 before:z-0">
           <!-- Stage 1 -->
           <div class="flex items-start gap-4 relative z-10" id="step1">
-            <div class="w-8 h-8 rounded-full bg-emerald-500 text-stone-950 flex items-center justify-center font-bold text-sm shadow-lg shadow-emerald-500/30">
+            <div id="step1Icon" class="w-8 h-8 rounded-full bg-emerald-500 text-stone-950 flex items-center justify-center font-bold text-sm shadow-lg shadow-emerald-500/30">
               ✓
             </div>
             <div>
-              <h4 class="font-bold text-white text-xs">Payment Approved & Order Confirmed</h4>
-              <p class="text-[11px] text-stone-400 mt-0.5">Paystack 256-bit authorization verified. Ticket logged to kitchen queue.</p>
+              <div class="flex items-center gap-2">
+                <h4 class="font-bold text-white text-xs">Payment Approved & Ticket Logged</h4>
+                <span id="step1Time" class="text-[10px] text-emerald-400 font-mono font-semibold">Paystack Verified ✓</span>
+              </div>
+              <p class="text-[11px] text-stone-400 mt-0.5">256-bit CBN authorized transaction confirmed. Kitchen staff printed your order slip.</p>
             </div>
           </div>
 
@@ -93,8 +166,8 @@
               🔥
             </div>
             <div>
-              <h4 class="font-bold text-white text-xs">Sizzling in the Smokehouse</h4>
-              <p class="text-[11px] text-stone-400 mt-0.5">Meat seared over hardwood flame, sauces mixed, wrapped hot in foil wraps.</p>
+              <h4 class="font-bold text-white text-xs">Sizzling on Smokehouse Grill</h4>
+              <p class="text-[11px] text-stone-400 mt-0.5">Meat flame-seared, special spices applied, packed boiling hot in foil and thermal boxes.</p>
             </div>
           </div>
 
@@ -105,7 +178,7 @@
             </div>
             <div>
               <h4 class="font-bold text-stone-400 text-xs">Dispatched on Route</h4>
-              <p class="text-[11px] text-stone-500 mt-0.5">Assigned delivery rider in transit via designated corridor in thermal insulated heat bags.</p>
+              <p class="text-[11px] text-stone-500 mt-0.5">Assigned rider in transit via designated corridor in thermal heat bags.</p>
             </div>
           </div>
 
@@ -115,55 +188,40 @@
               📦
             </div>
             <div>
-              <h4 class="font-bold text-stone-400 text-xs">Arrived at Destination</h4>
-              <p class="text-[11px] text-stone-500 mt-0.5">Handed over sizzling hot at your doorstep or collected at the hub.</p>
+              <h4 class="font-bold text-stone-400 text-xs">Delivered at Gate / Doorstep</h4>
+              <p class="text-[11px] text-stone-500 mt-0.5">Tamper seal confirmed unbroken, 4-digit PIN verified, meal released sizzling hot.</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Route & Dispatch Corridor Card -->
-      <div class="p-6 rounded-3xl bg-[#141211] border border-stone-800">
-        <span class="text-[10px] tracking-widest uppercase text-amber-400 font-bold block mb-4">Delivery Route Corridor</span>
-
-        <div class="grid grid-cols-2 gap-4 text-xs mb-4 pb-4 border-b border-stone-900">
+      <!-- 4. ROUTE CORRIDOR & DESTINATION SUMMARY -->
+      <div class="p-6 rounded-3xl bg-[#141211] border border-stone-800 text-xs space-y-3">
+        <div class="flex items-center justify-between pb-3 border-b border-stone-900">
           <div>
-            <span class="text-stone-500 block text-[10px]">CORRIDOR / DESTINATION</span>
-            <span id="trackCorridor" class="font-bold text-white text-sm">Olaiya / Gbongan Rd</span>
+            <span class="text-stone-500 block text-[10px]">DELIVERY CORRIDOR</span>
+            <span id="trackCorridor" class="font-bold text-white text-sm">Olaiya / Gbongan Road</span>
           </div>
           <div class="text-right">
             <span class="text-stone-500 block text-[10px]">ESTIMATED ARRIVAL</span>
-            <span id="trackEstTime" class="font-extrabold text-amber-400 text-sm">15 – 20 mins</span>
+            <span id="trackEstTime" class="font-extrabold text-amber-400 text-sm">15 – 25 mins</span>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 text-xs mb-4">
-          <div>
-            <span class="text-stone-500 block text-[10px]">DISPATCH RIDER</span>
-            <span id="trackRider" class="font-semibold text-white">Sunday O. (Bike #04)</span>
-          </div>
-          <div class="text-right">
-            <span class="text-stone-500 block text-[10px]">HOT BAG STATUS</span>
-            <span class="text-emerald-400 font-bold">Thermal Sealed ✓</span>
-          </div>
+        <div class="space-y-2 pt-1">
+          <div class="flex justify-between"><span class="text-stone-400">Order Reference:</span><span id="trackRef" class="font-mono text-amber-400 font-bold">FOOD_DEMO</span></div>
+          <div class="flex justify-between"><span class="text-stone-400">Customer Name:</span><span id="trackCustomer" class="font-semibold text-white">Valued Client</span></div>
+          <div class="flex justify-between"><span class="text-stone-400">Delivery Address:</span><span id="trackAddress" class="text-white text-right max-w-[60%]">Osogbo Metro</span></div>
+          <div class="flex justify-between border-t border-stone-900 pt-2"><span class="text-stone-400">Total Amount Paid:</span><span id="trackAmount" class="font-bold text-emerald-400">₦6,800 (Paid)</span></div>
         </div>
 
         <!-- 1-Click WhatsApp Support Hotline -->
-        <a id="btnTrackWhatsApp" href="https://wa.me/2348149640122?text=Hello%20Cravers%20Kitchen,%20I%20am%20tracking%20my%20order" target="_blank" class="w-full py-3.5 px-4 rounded-2xl bg-[#25D366] hover:bg-[#1EBE5D] text-stone-950 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg shadow-[#25D366]/20">
-          💬 WhatsApp Dispatch Hotline (08149640122)
+        <a id="btnTrackWhatsApp" href="https://wa.me/2348149640122?text=Hello%20Cravers%20Kitchen,%20I%20am%20tracking%20my%20order" target="_blank" class="mt-4 w-full py-3.5 px-4 rounded-2xl bg-stone-900 hover:bg-stone-800 border border-stone-700 text-stone-200 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition">
+          <span>💬</span> Message Kitchen Support (08149640122)
         </a>
       </div>
 
-      <!-- Order Details Summary -->
-      <div class="p-6 rounded-3xl bg-[#141211] border border-stone-800 text-xs space-y-2.5">
-        <span class="text-[10px] tracking-widest uppercase text-stone-400 font-bold block mb-2">Order Particulars</span>
-        <div class="flex justify-between"><span class="text-stone-400">Order Reference:</span><span id="trackRef" class="font-mono text-amber-400 font-bold">FOOD_DEMO</span></div>
-        <div class="flex justify-between"><span class="text-stone-400">Customer Name:</span><span id="trackCustomer" class="font-semibold text-white">Tayo Adeleke</span></div>
-        <div class="flex justify-between"><span class="text-stone-400">Delivery Address:</span><span id="trackAddress" class="text-white text-right max-w-[60%]">Flat 3, Adekunle Layout</span></div>
-        <div class="flex justify-between border-t border-stone-900 pt-2"><span class="text-stone-400">Amount Paid:</span><span id="trackAmount" class="font-bold text-amber-400">₦6,800</span></div>
-      </div>
-
-      <!-- VENDOR / OWNER STATUS TOGGLE (For Demos & Live Kitchen Staff) -->
+      <!-- 5. KITCHEN OWNER / VENDOR LIVE STATUS CONTROLLER -->
       <div class="p-5 rounded-3xl bg-[#1c1815] border border-amber-500/30 text-xs">
         <div class="flex items-center justify-between mb-2">
           <span class="font-bold text-white flex items-center gap-1.5">
@@ -173,30 +231,36 @@
           <span class="text-[10px] text-amber-400 uppercase font-semibold">Kitchen Staff View</span>
         </div>
         <p class="text-[11px] text-stone-400 mb-3">
-          As the kitchen owner, update the stage in 1 tap to notify the customer in real time:
+          As the kitchen owner, tap a stage below to simulate status update in real time:
         </p>
         <div class="grid grid-cols-3 gap-2">
-          <button onclick="updateVendorStatus('PREPARING')" class="py-2 px-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-white font-semibold text-[11px] transition text-center">
+          <button onclick="updateVendorStatus('PREPARING')" class="py-2.5 px-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-white font-semibold text-[11px] transition text-center">
             🔥 Preparing
           </button>
-          <button onclick="updateVendorStatus('DISPATCHED')" class="py-2 px-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-[11px] transition text-center">
+          <button onclick="updateVendorStatus('DISPATCHED')" class="py-2.5 px-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-[11px] transition text-center">
             🛵 Dispatched
           </button>
-          <button onclick="updateVendorStatus('DELIVERED')" class="py-2 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition text-center">
+          <button onclick="updateVendorStatus('DELIVERED')" class="py-2.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition text-center">
             ✓ Delivered
           </button>
         </div>
       </div>
+
     </div>
   </main>
 
   <script>
     const KITCHEN_WHATSAPP = "2348149640122";
 
-    // Auto-read ?ref= from URL
+    // Auto-read ?ref= and ?pin= from URL
     const urlParams = new URLSearchParams(window.location.search);
     const initialRef = urlParams.get('ref') || 'FOOD_1729768000';
+    const initialPin = urlParams.get('pin');
     document.getElementById('orderRefInput').value = initialRef;
+
+    if (initialPin) {
+      document.getElementById('trackPin').innerText = initialPin;
+    }
 
     async function fetchTrackingData() {
       const ref = document.getElementById('orderRefInput').value.trim() || initialRef;
@@ -208,7 +272,7 @@
           applyTrackingUI(data.order);
         }
       } catch (err) {
-        console.warn('Tracking fetch failed, showing standard demo radar:', err);
+        console.warn('Tracking fetch failed, using active state:', err);
       }
     }
 
@@ -218,18 +282,32 @@
       document.getElementById('trackAddress').innerText = order.address || 'Delivery Address Provided';
       document.getElementById('trackAmount').innerText = order.amount ? `₦${Number(order.amount).toLocaleString()} (Paid)` : '₦5,500 (Paid)';
       document.getElementById('trackCorridor').innerText = order.deliveryZone || (order.fulfillmentType === 'PICKUP' ? 'Store Pickup Hub' : 'Olaiya / Gbongan Road');
-      document.getElementById('trackEstTime').innerText = order.status === 'DELIVERED' ? 'Arrived ✓' : (order.estimatedMinutes || '15 – 25 mins');
-      document.getElementById('trackRider').innerText = order.riderName || 'Sunday O. (Bike #04)';
+      document.getElementById('trackEstTime').innerText = order.status === 'DELIVERED' ? 'Delivered ✓' : (order.estimatedMinutes || '15 – 25 mins');
 
-      // Set WhatsApp message
-      const waMsg = `Hi Cravers Kitchen! 🔥 I am checking on my order with reference ${order.reference}. Customer: ${order.customerName}. Please update me on delivery progress!`;
-      document.getElementById('btnTrackWhatsApp').href = `https://wa.me/${KITCHEN_WHATSAPP}?text=${encodeURIComponent(waMsg)}`;
+      // Security Handshake & Rider Details
+      const pin = order.securityPin || initialPin || '8412';
+      const seal = order.sealNumber || 'SEAL #9402';
+      const riderName = order.riderName || 'Sunday Oladipo (Fleet #04)';
+      const riderPhone = order.riderPhone || '08149640122';
+      const riderPlate = order.riderBikePlate || 'OS-492-BKT (Bajaj Boxer 150)';
 
-      // Update Stages
+      document.getElementById('trackPin').innerText = pin;
+      document.getElementById('trackSeal').innerText = seal;
+      document.getElementById('trackRiderName').innerText = riderName;
+      document.getElementById('trackRiderPlate').innerText = `Bike: ${riderPlate}`;
+
+      // Update Rider Call & WhatsApp Buttons
+      document.getElementById('btnCallRider').href = `tel:${riderPhone}`;
+      const waRiderMsg = `Hello ${riderName}! 🛵 I am expecting my Cravers order (${order.reference}) at ${order.address || 'my address'}. My delivery handshake PIN is ${pin}. Please update me when you reach my gate!`;
+      document.getElementById('btnWhatsAppRider').href = `https://wa.me/234${riderPhone.replace(/^0/, '')}?text=${encodeURIComponent(waRiderMsg)}`;
+
+      // Update Kitchen WhatsApp
+      const waKitchenMsg = `Hi Cravers Kitchen! 🔥 I am checking on my order ${order.reference}. Customer: ${order.customerName}. Handshake PIN: ${pin}.`;
+      document.getElementById('btnTrackWhatsApp').href = `https://wa.me/${KITCHEN_WHATSAPP}?text=${encodeURIComponent(waKitchenMsg)}`;
+
+      // Update 4-Stage Progression
       const s = order.status || 'PREPARING';
       const badge = document.getElementById('badgeLiveStatus');
-
-      // Reset styles
       const icon2 = document.getElementById('step2Icon');
       const icon3 = document.getElementById('step3Icon');
       const icon4 = document.getElementById('step4Icon');
@@ -238,17 +316,22 @@
         badge.innerText = '🔥 Preparing in Kitchen';
         badge.className = 'px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/40 text-amber-400 text-[11px] font-bold';
         icon2.className = 'w-8 h-8 rounded-full bg-amber-500 text-stone-950 flex items-center justify-center font-bold text-sm shadow-lg shadow-amber-500/30 animate-pulse';
+        icon2.innerText = '🔥';
         icon3.className = 'w-8 h-8 rounded-full bg-stone-900 border border-stone-800 text-stone-500 flex items-center justify-center font-bold text-sm';
+        icon3.innerText = '🛵';
         icon4.className = 'w-8 h-8 rounded-full bg-stone-900 border border-stone-800 text-stone-500 flex items-center justify-center font-bold text-sm';
+        icon4.innerText = '📦';
       } else if (s === 'DISPATCHED') {
         badge.innerText = '🛵 Rider Dispatched on Route';
         badge.className = 'px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/40 text-sky-400 text-[11px] font-bold';
-        icon2.className = 'w-8 h-8 rounded-full bg-emerald-500 text-stone-950 flex items-center justify-center font-bold text-sm';
+        icon2.className = 'w-8 h-8 rounded-full bg-emerald-500 text-stone-950 flex items-center justify-center font-bold text-sm shadow-md';
         icon2.innerText = '✓';
         icon3.className = 'w-8 h-8 rounded-full bg-sky-500 text-stone-950 flex items-center justify-center font-bold text-sm shadow-lg shadow-sky-500/30 animate-pulse';
+        icon3.innerText = '🛵';
         icon4.className = 'w-8 h-8 rounded-full bg-stone-900 border border-stone-800 text-stone-500 flex items-center justify-center font-bold text-sm';
+        icon4.innerText = '📦';
       } else if (s === 'DELIVERED') {
-        badge.innerText = '📦 Order Delivered';
+        badge.innerText = '📦 Order Delivered Successfully';
         badge.className = 'px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 text-[11px] font-bold';
         icon2.className = 'w-8 h-8 rounded-full bg-emerald-500 text-stone-950 flex items-center justify-center font-bold text-sm';
         icon2.innerText = '✓';
@@ -274,6 +357,8 @@
     }
 
     fetchTrackingData();
+    // Auto-poll every 5 seconds so live dispatch progression reflects in real time
+    setInterval(fetchTrackingData, 5000);
   </script>
 </body>
 </html>

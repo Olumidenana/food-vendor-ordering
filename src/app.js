@@ -120,10 +120,17 @@ app.post(['/api/orders/create', '/orders/create'], async (req, res) => {
       .join('\n');
 
     const finalRef = reference || `FOOD_${Date.now()}`;
+    const securityPin = Math.floor(1000 + Math.random() * 9000).toString();
+    const sealNumber = `SEAL-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const orderPayload = {
       type: 'FOOD_ORDER',
       reference: finalRef,
+      securityPin,
+      sealNumber,
+      riderName: 'Sunday Oladipo (Cravers Fleet #04)',
+      riderPhone: '08149640122',
+      riderBikePlate: 'OS-492-BKT (Bajaj Boxer 150)',
       customerName,
       customerPhone,
       customerEmail: customerEmail || '',
@@ -198,11 +205,18 @@ app.get(['/api/orders/track/:ref', '/orders/track/:ref'], async (req, res) => {
           const rows = await sbRes.json();
           if (rows && rows.length > 0) {
             const r = rows[0];
+            const fallbackPin = (Math.abs(ref.split('').reduce((acc, c) => acc + c.charCodeAt(0), 1000)) % 9000 + 1000).toString();
             const orderData = {
               reference: r.reference,
+              securityPin: r.security_pin || fallbackPin,
+              sealNumber: r.seal_number || `SEAL-${fallbackPin}`,
+              riderName: r.rider_name || 'Sunday Oladipo (Cravers Fleet #04)',
+              riderPhone: r.rider_phone || '08149640122',
+              riderBikePlate: r.rider_bike_plate || 'OS-492-BKT (Bajaj Boxer 150)',
               customerName: r.customer_name,
               customerPhone: r.customer_phone,
               fulfillmentType: r.fulfillment_type,
+              deliveryZone: r.delivery_zone || 'Designated Route Corridor',
               address: r.delivery_address,
               items: r.items,
               itemsSummary: r.items_summary,
@@ -234,11 +248,14 @@ app.get(['/api/orders/track/:ref', '/orders/track/:ref'], async (req, res) => {
     }
 
     // 4. Default / Simulated Live Demo Tracker (for testing any reference)
+    const demoPin = (Math.abs(ref.split('').reduce((acc, c) => acc + c.charCodeAt(0), 1000)) % 9000 + 1000).toString();
     res.json({
       success: true,
       simulated: true,
       order: {
         reference: ref,
+        securityPin: demoPin,
+        sealNumber: `SEAL-${demoPin}`,
         customerName: 'Valued Food Lover',
         customerPhone: '08149640122',
         fulfillmentType: 'DELIVERY',
@@ -251,8 +268,9 @@ app.get(['/api/orders/track/:ref', '/orders/track/:ref'], async (req, res) => {
         amount: 11600,
         paymentStatus: 'PAID',
         status: 'DISPATCHED',
-        riderName: 'Sunday O. (Bike #04)',
+        riderName: 'Sunday Oladipo (Cravers Fleet #04)',
         riderPhone: '08149640122',
+        riderBikePlate: 'OS-492-BKT (Bajaj Boxer 150)',
         estimatedMinutes: '12 - 18 mins',
         createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString()
       }

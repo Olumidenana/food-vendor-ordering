@@ -9,106 +9,86 @@ const { dispatchNotifications } = require('./services/notifications');
 
 const app = express();
 
-// Enable CORS
 app.use(cors());
 
-// Capture raw body for Paystack webhook signature verification
+// Capture raw body for Paystack signature verification
 app.use(express.json({
   verify: (req, res, buf) => {
     req.rawBody = buf;
   }
 }));
 
-// Serve static UI templates and admin portal
+// Serve static assets
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+// Explicit clean routes
+app.get(['/admin', '/admin.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'admin', 'index.html'));
+});
+
+/**
+ * Synchronize food order to Supabase table `food_orders`
+ */
+async function syncToSupabase(order) {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_ANON_KEY;
+
+  if (supabaseUrl && supabaseKey) {
+    try {
+      const url = `${supabaseUrl.replace(/\/$/, '')}/rest/v1/food_orders`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({
+          reference: order.reference,
+          customer_name: order.customerName,
+          customer_phone: order.customerPhone,
+          customer_email: order.customerEmail || '',
+          fulfillment_type: order.fulfillmentType,
+          delivery_address: order.address,
+          items: order.items,
+          items_summary: order.itemsSummary,
+          subtotal: order.subtotal || order.amount,
+          delivery_fee: order.deliveryFee || 0,
+          total_amount: order.amount,
+          payment_status: 'PAID',
+          notes: order.notes || '',
+          vendor_name: 'CRAVERS GRILL & SHAWARMA'
+        })
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        console.warn('[Supabase Food Sync] Response error:', errText);
+      } else {
+        console.log('[Supabase Food Sync] Successfully stored order in PostgreSQL.');
+      }
+    } catch (err) {
+      console.warn('[Supabase Food Sync] Network error:', err.message);
+    }
+  }
+}
+
 // 1. Health Endpoint
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   res.json({
     status: 'online',
+    system: 'Cravers Food & Grill Engine',
     timestamp: new Date().toISOString(),
     demoMode: IS_DEMO_MODE,
     hasGoogleSheetWebhook: !!process.env.GOOGLE_SHEET_WEBHOOK_URL,
+    hasSupabase: !!process.env.SUPABASE_URL,
     hasTelegram: !!process.env.TELEGRAM_BOT_TOKEN
   });
 });
 
-// 2. Availability Checker
-app.get('/api/availability', (req, res) => {
-  const { date, stylist } = req.query;
-  const { bookings } = getStoredRecords();
-
-  const bookedSlots = bookings
-    .filter(b => b.date === date && (!stylist || b.stylist === stylist || b.stylist === 'Any'))
-    .map(b => b.timeSlot);
-
-  const defaultSlots = [
-    '09:00 AM', '10:30 AM', '12:00 PM', 
-    '01:30 PM', '03:00 PM', '04:30 PM', '06:00 PM'
-  ];
-
-  const slots = defaultSlots.map(time => ({
-    time,
-    available: !bookedSlots.includes(time)
-  }));
-
-  res.json({ date, slots });
-});
-
-// 3. Beauty / Lash Booking
-app.post('/api/bookings/create', async (req, res) => {
-  try {
-    const {
-      serviceName,
-      stylist,
-      date,
-      timeSlot,
-      customerName,
-      customerPhone,
-      customerEmail,
-      depositAmount,
-      notes,
-      reference
-    } = req.body;
-
-    if (!customerName || !customerPhone || !serviceName || !date || !timeSlot) {
-      return res.status(400).json({ error: 'Missing required booking fields.' });
-    }
-
-    const bookingPayload = {
-      type: 'BEAUTY_BOOKING',
-      reference: reference || `LASH_${Date.now()}`,
-      serviceName,
-      stylist: stylist || 'Any Stylist',
-      date,
-      timeSlot,
-      customerName,
-      customerPhone,
-      customerEmail: customerEmail || '',
-      amount: Number(depositAmount) || 5000,
-      paymentStatus: 'PAID',
-      notes: notes || '',
-      createdAt: new Date().toISOString()
-    };
-
-    const sheetSync = await syncToGoogleSheet(bookingPayload);
-    const notificationResult = await dispatchNotifications('BEAUTY_BOOKING', bookingPayload);
-
-    res.json({
-      success: true,
-      message: 'Booking confirmed and processed.',
-      booking: bookingPayload,
-      sheetSync,
-      notifications: notificationResult
-    });
-  } catch (error) {
-    console.error('[API] Booking error:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// 4. Food & Treats Order
-app.post('/api/orders/create', async (req, res) => {
+// 2. Food & Treats Order Endpoint (supports both /api/orders/create and /orders/create)
+app.post(['/api/orders/create', '/orders/create'], async (req, res) => {
   try {
     const {
       customerName,
@@ -117,13 +97,15 @@ app.post('/api/orders/create', async (req, res) => {
       fulfillmentType,
       address,
       items,
+      subtotal,
+      deliveryFee,
       totalAmount,
       notes,
       reference
     } = req.body;
 
     if (!customerName || !customerPhone || !items || !items.length) {
-      return res.status(400).json({ error: 'Missing required order fields or empty cart.' });
+      return res.status(400).json({ error: 'Missing required order details or empty tray.' });
     }
 
     const itemsSummary = items
@@ -140,30 +122,35 @@ app.post('/api/orders/create', async (req, res) => {
       address: fulfillmentType === 'PICKUP' ? 'Store Pickup' : (address || 'Not provided'),
       items,
       itemsSummary,
+      subtotal: Number(subtotal) || Number(totalAmount),
+      deliveryFee: Number(deliveryFee) || 0,
       amount: Number(totalAmount) || 0,
       paymentStatus: 'PAID',
       notes: notes || '',
       createdAt: new Date().toISOString()
     };
 
-    const sheetSync = await syncToGoogleSheet(orderPayload);
-    const notificationResult = await dispatchNotifications('FOOD_ORDER', orderPayload);
+    // Parallel sync to Google Sheets, Supabase, and Notifications
+    const [sheetSync] = await Promise.all([
+      syncToGoogleSheet(orderPayload),
+      syncToSupabase(orderPayload),
+      dispatchNotifications('FOOD_ORDER', orderPayload).catch(e => console.warn('[Notification Error]:', e.message))
+    ]);
 
     res.json({
       success: true,
-      message: 'Order placed and sent to kitchen.',
+      message: 'Kitchen ticket generated and logged successfully.',
       order: orderPayload,
-      sheetSync,
-      notifications: notificationResult
+      sheetSync
     });
   } catch (error) {
-    console.error('[API] Order error:', error);
+    console.error('[API] Food Order error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// 5. Paystack Initialize
-app.post('/api/paystack/initialize', async (req, res) => {
+// 3. Paystack Transaction Initialize
+app.post(['/api/paystack/initialize', '/paystack/initialize'], async (req, res) => {
   try {
     const { email, amount, metadata, callbackUrl } = req.body;
     const amountInKobo = Math.round(Number(amount) * 100);
@@ -182,8 +169,8 @@ app.post('/api/paystack/initialize', async (req, res) => {
   }
 });
 
-// 6. Paystack Webhook
-app.post('/api/paystack/webhook', async (req, res) => {
+// 4. Paystack Webhook
+app.post(['/api/paystack/webhook', '/paystack/webhook'], async (req, res) => {
   const signature = req.headers['x-paystack-signature'];
   const isValid = verifyWebhookSignature(req.rawBody, signature);
 
@@ -196,24 +183,8 @@ app.post('/api/paystack/webhook', async (req, res) => {
     const data = event.data;
     const metadata = data.metadata || {};
 
-    if (metadata.orderType === 'BEAUTY_BOOKING') {
-      await syncToGoogleSheet({
-        type: 'BEAUTY_BOOKING',
-        reference: data.reference,
-        serviceName: metadata.serviceName,
-        stylist: metadata.stylist,
-        date: metadata.date,
-        timeSlot: metadata.timeSlot,
-        customerName: metadata.customerName,
-        customerPhone: metadata.customerPhone,
-        customerEmail: data.customer.email,
-        amount: data.amount / 100,
-        paymentStatus: 'PAID',
-        notes: metadata.notes
-      });
-      await dispatchNotifications('BEAUTY_BOOKING', metadata);
-    } else if (metadata.orderType === 'FOOD_ORDER') {
-      await syncToGoogleSheet({
+    if (metadata.orderType === 'FOOD_ORDER') {
+      const orderPayload = {
         type: 'FOOD_ORDER',
         reference: data.reference,
         customerName: metadata.customerName,
@@ -225,16 +196,21 @@ app.post('/api/paystack/webhook', async (req, res) => {
         amount: data.amount / 100,
         paymentStatus: 'PAID',
         notes: metadata.notes
-      });
-      await dispatchNotifications('FOOD_ORDER', metadata);
+      };
+
+      await Promise.all([
+        syncToGoogleSheet(orderPayload),
+        syncToSupabase(orderPayload),
+        dispatchNotifications('FOOD_ORDER', metadata)
+      ]);
     }
   }
 
   res.sendStatus(200);
 });
 
-// 7. Admin Data Records
-app.get('/api/records', (req, res) => {
+// 5. Admin Data Records
+app.get(['/api/records', '/records'], (req, res) => {
   const records = getStoredRecords();
   res.json(records);
 });

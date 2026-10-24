@@ -1,0 +1,22 @@
+{
+  "name": "Cravers Shawarma & Grill Co.",
+  "short_name": "CraversGrill",
+  "description": "Artisan Shawarma, Flame-Grilled BBQ, and Gourmet Treats delivered hot to your doorstep.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0a09",
+  "theme_color": "#f59e0b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=192&auto=format&fit=crop&q=80",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=512&auto=format&fit=crop&q=80",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

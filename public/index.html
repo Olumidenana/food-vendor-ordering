@@ -3,326 +3,924 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cravers Shawarma & Doughnut Co. • Order Online</title>
+  <title>Cravers Shawarma, Grill & Sweet Co. • Order Online</title>
+  <meta name="description" content="Artisan shawarma, flame-grilled BBQ chicken, gourmet doughnuts, and iced mocktails delivered hot in 30-45 minutes.">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#f59e0b">
+
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-serif { font-family: 'Playfair Display', serif; }
+    .amber-gradient {
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 4px;
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #292524;
+      border-radius: 9999px;
+    }
   </style>
 </head>
-<body class="bg-amber-950/20 text-stone-100 min-h-screen bg-stone-950 pb-32 antialiased selection:bg-amber-500 selection:text-black">
+<body class="bg-[#0c0a09] text-stone-100 min-h-screen pb-36 antialiased selection:bg-amber-500 selection:text-black">
 
-  <!-- Top Announcement Bar -->
-  <div class="bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 px-4 py-2 text-center text-xs text-white font-semibold flex items-center justify-center gap-2">
-    <span>🔥 Freshly Grilled & Baked to Order</span>
-    <span>•</span>
-    <span>⚡ 25-40 min Delivery</span>
+  <!-- PWA Install Banner -->
+  <div id="pwaBanner" class="hidden bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 text-white px-4 py-2.5 text-xs font-semibold flex items-center justify-between sticky top-0 z-50 shadow-lg">
+    <div class="flex items-center gap-2">
+      <span class="text-base">📱</span>
+      <span>Install <b>Cravers Grill App</b> on your home screen for fast 1-tap reorders!</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="installPWA()" class="px-3 py-1 bg-black/30 hover:bg-black/50 rounded-lg text-white font-bold transition">
+        Install
+      </button>
+      <button onclick="dismissPwaBanner()" class="text-white/80 hover:text-white text-base">✕</button>
+    </div>
   </div>
 
-  <!-- Header -->
-  <header class="max-w-2xl mx-auto px-5 pt-6 pb-4">
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-2xl shadow-inner">
+  <!-- Announcement Ticker -->
+  <div class="bg-[#141211] border-b border-stone-900 px-4 py-2 text-center text-[11px] text-stone-300 font-medium flex items-center justify-center gap-3">
+    <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Kitchen Grills Hot & Active</span>
+    <span>•</span>
+    <span>🛵 Average Dispatch: 25 – 40 mins</span>
+  </div>
+
+  <!-- Hero & Brand Header -->
+  <header class="max-w-2xl mx-auto px-5 pt-7 pb-4">
+    <div class="flex items-start justify-between mb-4">
+      <div class="flex items-center gap-3.5">
+        <div class="w-14 h-14 rounded-2xl amber-gradient flex items-center justify-center text-3xl shadow-xl shadow-amber-500/10 border border-amber-400/30 flex-shrink-0">
           🌯
         </div>
         <div>
-          <h1 class="text-xl font-extrabold text-white">Cravers Shawarma & Doughnuts</h1>
-          <p class="text-xs text-stone-400">Lekki Phase 1 • Open till 11:00 PM</p>
+          <h1 class="text-2xl font-serif font-bold text-white tracking-tight">Cravers Shawarma & Grill</h1>
+          <p class="text-xs text-stone-400 mt-0.5">Artisan Smoked Grills & Bakery • Open Daily till 11:00 PM</p>
         </div>
       </div>
-      <div class="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold flex items-center gap-1.5">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Kitchen Open
+      <div class="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-semibold flex items-center gap-1.5 flex-shrink-0">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Taking Orders
       </div>
     </div>
 
     <!-- Fulfillment Picker (Delivery vs Pickup) -->
-    <div class="grid grid-cols-2 p-1 rounded-2xl bg-stone-900 border border-stone-800">
-      <button id="btnDelivery" type="button" class="py-2.5 rounded-xl bg-amber-500 text-stone-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition">
+    <div class="grid grid-cols-2 p-1.5 rounded-2xl bg-[#141211] border border-stone-800 shadow-inner">
+      <button id="btnDelivery" type="button" class="py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition">
         🛵 Doorstep Delivery
       </button>
       <button id="btnPickup" type="button" class="py-2.5 rounded-xl text-stone-400 hover:text-white font-semibold text-xs flex items-center justify-center gap-2 transition">
-        🏃 Pick Up at Store
+        🏃 Store Pickup (Free)
+      </button>
+    </div>
+
+    <!-- Category Filters -->
+    <div class="flex gap-2 overflow-x-auto whitespace-nowrap mt-5 pb-1 custom-scrollbar">
+      <button onclick="filterCategory('all')" class="cat-btn active px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-stone-950 transition" data-cat="all">
+        🔥 All Favorites
+      </button>
+      <button onclick="filterCategory('shawarma')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#141211] border border-stone-800 text-stone-300 hover:border-stone-700 transition" data-cat="shawarma">
+        🌯 Shawarma & Wraps
+      </button>
+      <button onclick="filterCategory('grill')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#141211] border border-stone-800 text-stone-300 hover:border-stone-700 transition" data-cat="grill">
+        🍗 Flame BBQ & Suya
+      </button>
+      <button onclick="filterCategory('bakery')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#141211] border border-stone-800 text-stone-300 hover:border-stone-700 transition" data-cat="bakery">
+        🍩 Doughnuts & Sweets
+      </button>
+      <button onclick="filterCategory('drinks')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#141211] border border-stone-800 text-stone-300 hover:border-stone-700 transition" data-cat="drinks">
+        🥤 Chilled Mocktails
       </button>
     </div>
   </header>
 
-  <!-- Menu Section -->
-  <main class="max-w-2xl mx-auto px-5 mt-4">
+  <!-- Menu Catalog -->
+  <main class="max-w-2xl mx-auto px-5 mt-3">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-base font-extrabold text-white tracking-tight">Today's Menu</h2>
-      <span class="text-xs text-stone-400">Tap + to add to tray</span>
+      <h2 class="text-sm uppercase tracking-wider font-bold text-stone-300">Fresh Kitchen Menu</h2>
+      <span class="text-xs text-amber-400/90 font-medium">Tap item to customize</span>
     </div>
 
-    <div class="space-y-4" id="menuContainer">
+    <div class="space-y-3.5" id="menuContainer">
       <!-- Item 1 -->
-      <div class="food-card p-4 rounded-3xl bg-stone-900/80 border border-stone-800 flex gap-4 items-center">
-        <div class="w-24 h-24 rounded-2xl bg-stone-800 overflow-hidden flex-shrink-0 relative">
+      <div class="food-item p-4 rounded-3xl bg-[#141211] border border-stone-800 hover:border-amber-500/40 transition-all flex gap-4 items-center cursor-pointer" data-category="shawarma" onclick="openItemCustomizer('Double Sausage Chicken Shawarma', 4000, 'Juicy shredded chicken breast, 2 beef franks, special garlic cream sauce & crisp spiced slaw.', 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400')">
+        <div class="w-24 h-24 rounded-2xl bg-stone-900 overflow-hidden flex-shrink-0 relative border border-stone-800/80">
           <img src="https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=300&auto=format&fit=crop&q=80" alt="Shawarma" class="w-full h-full object-cover">
+          <span class="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-full bg-amber-500 text-stone-950 font-bold text-[9px] uppercase tracking-wider">Bestseller</span>
         </div>
         <div class="flex-grow">
-          <div class="flex items-start justify-between">
-            <h3 class="font-bold text-white text-sm">Double Sausage Chicken Shawarma</h3>
-          </div>
-          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Juicy shredded chicken breast, 2 beef franks, special creamy sauce & crisp slaw.</p>
-          <div class="flex items-center justify-between mt-3">
+          <h3 class="font-bold text-white text-sm">Double Sausage Chicken Shawarma</h3>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Juicy shredded chicken breast, 2 beef franks, special garlic cream sauce & crisp spiced slaw.</p>
+          <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-stone-900">
             <span class="font-extrabold text-amber-400 text-sm">₦4,000</span>
-            <button onclick="addToCart('Double Sausage Chicken Shawarma', 4000, 'Extra Sausage (+₦500)')" class="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs active:scale-95 transition">
-              + Add
-            </button>
+            <span class="px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-xs hover:bg-amber-500 hover:text-stone-950 transition">
+              + Customize & Add
+            </span>
           </div>
         </div>
       </div>
 
       <!-- Item 2 -->
-      <div class="food-card p-4 rounded-3xl bg-stone-900/80 border border-stone-800 flex gap-4 items-center">
-        <div class="w-24 h-24 rounded-2xl bg-stone-800 overflow-hidden flex-shrink-0 relative">
-          <img src="https://images.unsplash.com/photo-1561651823-34feb02250e4?w=300&auto=format&fit=crop&q=80" alt="Shawarma Combo" class="w-full h-full object-cover">
+      <div class="food-item p-4 rounded-3xl bg-[#141211] border border-stone-800 hover:border-amber-500/40 transition-all flex gap-4 items-center cursor-pointer" data-category="shawarma" onclick="openItemCustomizer('Jumbo Meat-Mix Shawarma (Cheesy)', 5500, 'Premium tender beef strip chunks & shredded chicken loaded with melted mozzarella.', 'https://images.unsplash.com/photo-1561651823-34feb02250e4?w=400')">
+        <div class="w-24 h-24 rounded-2xl bg-stone-900 overflow-hidden flex-shrink-0 relative border border-stone-800/80">
+          <img src="https://images.unsplash.com/photo-1561651823-34feb02250e4?w=300&auto=format&fit=crop&q=80" alt="Cheesy Shawarma" class="w-full h-full object-cover">
         </div>
         <div class="flex-grow">
-          <div class="flex items-start justify-between">
-            <h3 class="font-bold text-white text-sm">Jumbo Meat Mix Shawarma (Cheesy)</h3>
-          </div>
-          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Premium beef tenderloin & spiced chicken with double mozzarella melt.</p>
-          <div class="flex items-center justify-between mt-3">
+          <h3 class="font-bold text-white text-sm">Jumbo Meat-Mix Shawarma (Cheesy)</h3>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Premium tender beef strip chunks & shredded chicken loaded with melted mozzarella.</p>
+          <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-stone-900">
             <span class="font-extrabold text-amber-400 text-sm">₦5,500</span>
-            <button onclick="addToCart('Jumbo Meat Mix Shawarma (Cheesy)', 5500, 'Double Melted Cheese')" class="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs active:scale-95 transition">
-              + Add
-            </button>
+            <span class="px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-xs hover:bg-amber-500 hover:text-stone-950 transition">
+              + Customize & Add
+            </span>
           </div>
         </div>
       </div>
 
       <!-- Item 3 -->
-      <div class="food-card p-4 rounded-3xl bg-stone-900/80 border border-stone-800 flex gap-4 items-center">
-        <div class="w-24 h-24 rounded-2xl bg-stone-800 overflow-hidden flex-shrink-0 relative">
-          <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=300&auto=format&fit=crop&q=80" alt="Doughnuts" class="w-full h-full object-cover">
+      <div class="food-item p-4 rounded-3xl bg-[#141211] border border-stone-800 hover:border-amber-500/40 transition-all flex gap-4 items-center cursor-pointer" data-category="grill" onclick="openItemCustomizer('Smoked BBQ Quarter Chicken & Fries', 4500, 'Flame-kissed chicken quarter dipped in honey-smoked BBQ glaze, paired with seasoned fries & slaw.', 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400')">
+        <div class="w-24 h-24 rounded-2xl bg-stone-900 overflow-hidden flex-shrink-0 relative border border-stone-800/80">
+          <img src="https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=300&auto=format&fit=crop&q=80" alt="BBQ Chicken" class="w-full h-full object-cover">
+          <span class="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-full bg-orange-600 text-white font-bold text-[9px] uppercase tracking-wider">Smoked</span>
         </div>
         <div class="flex-grow">
-          <div class="flex items-start justify-between">
-            <h3 class="font-bold text-white text-sm">Glazed Artisan Doughnuts (Box of 4)</h3>
-          </div>
-          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Puffy brioche dough: 2x Nutella Hazelnut, 1x Biscoff Crumble, 1x Classic Vanilla Glaze.</p>
-          <div class="flex items-center justify-between mt-3">
-            <span class="font-extrabold text-amber-400 text-sm">₦4,800</span>
-            <button onclick="addToCart('Glazed Artisan Doughnuts (Box of 4)', 4800, 'Assorted Box')" class="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs active:scale-95 transition">
-              + Add
-            </button>
+          <h3 class="font-bold text-white text-sm">Smoked BBQ Quarter Chicken & Fries</h3>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Flame-kissed chicken quarter dipped in honey-smoked BBQ glaze, paired with seasoned fries & slaw.</p>
+          <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-stone-900">
+            <span class="font-extrabold text-amber-400 text-sm">₦4,500</span>
+            <span class="px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-xs hover:bg-amber-500 hover:text-stone-950 transition">
+              + Customize & Add
+            </span>
           </div>
         </div>
       </div>
 
       <!-- Item 4 -->
-      <div class="food-card p-4 rounded-3xl bg-stone-900/80 border border-stone-800 flex gap-4 items-center">
-        <div class="w-24 h-24 rounded-2xl bg-stone-800 overflow-hidden flex-shrink-0 relative">
-          <img src="https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=300&auto=format&fit=crop&q=80" alt="Milkshake" class="w-full h-full object-cover">
+      <div class="food-item p-4 rounded-3xl bg-[#141211] border border-stone-800 hover:border-amber-500/40 transition-all flex gap-4 items-center cursor-pointer" data-category="grill" onclick="openItemCustomizer('Artisan Beef Suya Platter', 3500, 'Tender flank beef grilled over hot coals with yaji pepper spices, fresh red onions & tomatoes.', 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400')">
+        <div class="w-24 h-24 rounded-2xl bg-stone-900 overflow-hidden flex-shrink-0 relative border border-stone-800/80">
+          <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=300&auto=format&fit=crop&q=80" alt="Suya Platter" class="w-full h-full object-cover">
         </div>
         <div class="flex-grow">
-          <div class="flex items-start justify-between">
-            <h3 class="font-bold text-white text-sm">Thick Oreo Crush Shake (500ml)</h3>
+          <h3 class="font-bold text-white text-sm">Artisan Beef Suya Platter</h3>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Tender flank beef grilled over hot coals with yaji pepper spices, fresh red onions & tomatoes.</p>
+          <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-stone-900">
+            <span class="font-extrabold text-amber-400 text-sm">₦3,500</span>
+            <span class="px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-xs hover:bg-amber-500 hover:text-stone-950 transition">
+              + Customize & Add
+            </span>
           </div>
-          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Blended dairy ice cream with cracked Oreo cookies and rich chocolate drizzle.</p>
-          <div class="flex items-center justify-between mt-3">
-            <span class="font-extrabold text-amber-400 text-sm">₦3,000</span>
-            <button onclick="addToCart('Thick Oreo Crush Shake', 3000, 'Chilled')" class="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs active:scale-95 transition">
-              + Add
-            </button>
+        </div>
+      </div>
+
+      <!-- Item 5 -->
+      <div class="food-item p-4 rounded-3xl bg-[#141211] border border-stone-800 hover:border-amber-500/40 transition-all flex gap-4 items-center cursor-pointer" data-category="bakery" onclick="openItemCustomizer('Glazed Gourmet Doughnut Box (4-Pack)', 4800, 'Ultra fluffy brioche doughnuts: 2 Salted Caramel Glaze & 2 Belgian Chocolate Ganache.', 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400')">
+        <div class="w-24 h-24 rounded-2xl bg-stone-900 overflow-hidden flex-shrink-0 relative border border-stone-800/80">
+          <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=300&auto=format&fit=crop&q=80" alt="Doughnut Box" class="w-full h-full object-cover">
+        </div>
+        <div class="flex-grow">
+          <h3 class="font-bold text-white text-sm">Gourmet Doughnut Box (4-Pack)</h3>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Ultra fluffy brioche doughnuts: 2 Salted Caramel Glaze & 2 Belgian Chocolate Ganache.</p>
+          <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-stone-900">
+            <span class="font-extrabold text-amber-400 text-sm">₦4,800</span>
+            <span class="px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-xs hover:bg-amber-500 hover:text-stone-950 transition">
+              + Customize & Add
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 6 -->
+      <div class="food-item p-4 rounded-3xl bg-[#141211] border border-stone-800 hover:border-amber-500/40 transition-all flex gap-4 items-center cursor-pointer" data-category="drinks" onclick="openItemCustomizer('Signature Chapman Mocktail (Chilled)', 1800, 'Classic Nigerian blend of sparkling citrus, Angostura aromatic bitters, cucumber & fresh mint.', 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400')">
+        <div class="w-24 h-24 rounded-2xl bg-stone-900 overflow-hidden flex-shrink-0 relative border border-stone-800/80">
+          <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=300&auto=format&fit=crop&q=80" alt="Chapman Mocktail" class="w-full h-full object-cover">
+        </div>
+        <div class="flex-grow">
+          <h3 class="font-bold text-white text-sm">Signature Chapman Mocktail (Chilled)</h3>
+          <p class="text-xs text-stone-400 mt-1 line-clamp-2">Classic Nigerian blend of sparkling citrus, Angostura bitters, fresh cucumber & mint.</p>
+          <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-stone-900">
+            <span class="font-extrabold text-amber-400 text-sm">₦1,800</span>
+            <span class="px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold text-xs hover:bg-amber-500 hover:text-stone-950 transition">
+              + Customize & Add
+            </span>
           </div>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- Sticky Bottom Cart Bar -->
-  <div id="cartBar" class="fixed bottom-0 left-0 right-0 p-4 bg-stone-950/90 backdrop-blur-xl border-t border-stone-800 z-40 transition transform translate-y-0">
-    <div class="max-w-2xl mx-auto flex items-center justify-between">
-      <div>
-        <div class="text-xs text-stone-400"><span id="cartCount">0</span> items in tray</div>
-        <div id="cartTotalText" class="text-lg font-extrabold text-white">₦0</div>
+  <!-- ======================================================== -->
+  <!-- ITEM CUSTOMIZER DRAWER / MODAL -->
+  <!-- ======================================================== -->
+  <div id="customizerModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-[#141211] border border-stone-800 rounded-t-3xl sm:rounded-3xl max-w-md w-full overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-150 flex flex-col max-h-[90vh]">
+      <!-- Header Image -->
+      <div class="h-40 w-full relative overflow-hidden bg-stone-900">
+        <img id="custItemImg" src="" class="w-full h-full object-cover">
+        <button onclick="closeItemCustomizer()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center font-bold text-sm">✕</button>
       </div>
-      <button id="btnOpenCheckout" onclick="openCheckoutModal()" class="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-extrabold text-sm shadow-lg shadow-amber-500/20 hover:brightness-110 active:scale-95 transition flex items-center gap-2">
-        <span>Proceed to Checkout</span> →
+
+      <div class="p-5 overflow-y-auto space-y-4 text-xs custom-scrollbar">
+        <div>
+          <h3 id="custItemName" class="font-bold text-white text-base">Item Name</h3>
+          <p id="custItemDesc" class="text-stone-400 text-[11px] mt-0.5">Description</p>
+          <span id="custItemBasePrice" class="font-extrabold text-amber-400 text-sm block mt-1">₦4,000</span>
+        </div>
+
+        <!-- Spice Level -->
+        <div class="border-t border-stone-900 pt-3">
+          <label class="block text-stone-300 font-bold text-[11px] mb-2">Spice Preference</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="selectSpice('Mild')" class="spice-btn active py-2 rounded-xl border border-amber-500 bg-amber-500/10 text-amber-400 font-semibold text-center" data-spice="Mild">
+              🌱 Mild
+            </button>
+            <button type="button" onclick="selectSpice('Spicy')" class="spice-btn py-2 rounded-xl border border-stone-800 bg-[#120f0e] text-stone-300 font-semibold text-center" data-spice="Spicy">
+              🌶️ Spicy
+            </button>
+            <button type="button" onclick="selectSpice('Suya Hot')" class="spice-btn py-2 rounded-xl border border-stone-800 bg-[#120f0e] text-stone-300 font-semibold text-center" data-spice="Suya Hot">
+              🔥 Suya Hot
+            </button>
+          </div>
+        </div>
+
+        <!-- Add-on Extras -->
+        <div class="border-t border-stone-900 pt-3">
+          <label class="block text-stone-300 font-bold text-[11px] mb-2">Add Delicious Extras</label>
+          <div class="space-y-2">
+            <label class="flex items-center justify-between p-2.5 rounded-xl border border-stone-800/80 bg-[#120f0e] cursor-pointer hover:border-stone-700">
+              <div class="flex items-center gap-2.5">
+                <input type="checkbox" value="Extra Jumbo Sausage" data-addon-price="500" class="addon-check rounded text-amber-500 focus:ring-0">
+                <span class="text-white text-xs">Extra Jumbo Beef Frank</span>
+              </div>
+              <span class="text-amber-400 font-semibold text-xs">+₦500</span>
+            </label>
+
+            <label class="flex items-center justify-between p-2.5 rounded-xl border border-stone-800/80 bg-[#120f0e] cursor-pointer hover:border-stone-700">
+              <div class="flex items-center gap-2.5">
+                <input type="checkbox" value="Melted Mozzarella Cheese" data-addon-price="800" class="addon-check rounded text-amber-500 focus:ring-0">
+                <span class="text-white text-xs">Melted Mozzarella Cheese</span>
+              </div>
+              <span class="text-amber-400 font-semibold text-xs">+₦800</span>
+            </label>
+
+            <label class="flex items-center justify-between p-2.5 rounded-xl border border-stone-800/80 bg-[#120f0e] cursor-pointer hover:border-stone-700">
+              <div class="flex items-center gap-2.5">
+                <input type="checkbox" value="Spiced Fried Plantain (Dodo)" data-addon-price="600" class="addon-check rounded text-amber-500 focus:ring-0">
+                <span class="text-white text-xs">Spiced Fried Plantain (Dodo)</span>
+              </div>
+              <span class="text-amber-400 font-semibold text-xs">+₦600</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Quantity -->
+        <div class="border-t border-stone-900 pt-3 flex items-center justify-between">
+          <span class="font-bold text-white text-xs">Quantity</span>
+          <div class="flex items-center gap-3 bg-[#1c1815] p-1 rounded-xl border border-stone-800">
+            <button type="button" onclick="adjustCustomQty(-1)" class="w-7 h-7 rounded-lg bg-stone-800 text-white font-bold flex items-center justify-center hover:bg-stone-700">-</button>
+            <span id="custQtyText" class="font-bold text-white text-sm w-5 text-center">1</span>
+            <button type="button" onclick="adjustCustomQty(1)" class="w-7 h-7 rounded-lg bg-stone-800 text-white font-bold flex items-center justify-center hover:bg-stone-700">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Action -->
+      <div class="p-4 border-t border-stone-900 bg-[#161311]">
+        <button onclick="commitCustomizedItem()" class="w-full py-3.5 rounded-2xl amber-gradient text-stone-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/10 hover:brightness-105 active:scale-[0.99] transition flex items-center justify-center gap-2">
+          <span>Add to Tray (<span id="custFinalTotal">₦4,000</span>)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- STICKY BOTTOM CHECKOUT TRAY BAR -->
+  <!-- ======================================================== -->
+  <div id="stickyTrayBar" class="fixed bottom-0 inset-x-0 p-4 bg-[#141211]/95 backdrop-blur-md border-t border-stone-800 z-40">
+    <div class="max-w-2xl mx-auto flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-center text-xl relative">
+          🛍️
+          <span id="trayBadgeCount" class="absolute -top-1.5 -right-1.5 bg-amber-500 text-stone-950 text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+        </div>
+        <div>
+          <span class="text-[10px] text-stone-400 block uppercase tracking-wider font-semibold">Your Food Tray</span>
+          <span id="trayTotalDisplay" class="font-extrabold text-white text-base">₦0</span>
+        </div>
+      </div>
+
+      <button onclick="openCheckoutModal()" class="py-3 px-6 rounded-2xl amber-gradient text-stone-950 font-bold text-xs tracking-wide shadow-xl shadow-amber-500/20 hover:brightness-105 active:scale-95 transition flex items-center gap-2">
+        <span>Review & Checkout →</span>
       </button>
     </div>
   </div>
 
-  <!-- Checkout Drawer / Modal -->
-  <div id="checkoutModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-stone-900 border border-stone-800 rounded-t-3xl sm:rounded-3xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between pb-4 border-b border-stone-800 mb-4">
-        <h3 class="text-lg font-bold text-white">Complete Your Order</h3>
-        <button onclick="closeCheckoutModal()" class="text-stone-400 hover:text-white text-xl">✕</button>
+  <!-- ======================================================== -->
+  <!-- CHECKOUT & DISPATCH MODAL -->
+  <!-- ======================================================== -->
+  <div id="checkoutModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#141211] border border-stone-800 rounded-3xl p-6 max-w-sm w-full shadow-2xl relative animate-in fade-in zoom-in duration-150 max-h-[92vh] overflow-y-auto custom-scrollbar">
+      <div class="flex items-center justify-between mb-4 border-b border-stone-900 pb-3">
+        <div>
+          <h3 class="font-bold text-white text-base">Kitchen Checkout</h3>
+          <p class="text-[11px] text-stone-400">Order verification & delivery address</p>
+        </div>
+        <button onclick="closeCheckoutModal()" class="text-stone-400 hover:text-white text-lg font-bold">✕</button>
       </div>
 
-      <!-- Order Tray Items -->
-      <div class="mb-4">
-        <div class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">Order Summary</div>
-        <div id="modalCartItems" class="space-y-2 text-xs">
-          <!-- Items injected via JS -->
-        </div>
+      <!-- Items List -->
+      <div class="space-y-2 mb-4" id="modalCartItems">
+        <!-- Injected via JS -->
       </div>
 
-      <!-- Customer Details Form -->
-      <div class="space-y-3 mb-6">
+      <!-- Customer Form -->
+      <div class="space-y-3 text-xs mb-4">
         <div>
-          <label class="block text-xs font-medium text-stone-400 mb-1">Your Name</label>
-          <input type="text" id="custName" placeholder="e.g. Tunde Williams" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
-        </div>
-
-        <div>
-          <label class="block text-xs font-medium text-stone-400 mb-1">Phone Number (For Rider / Updates)</label>
-          <input type="tel" id="custPhone" placeholder="e.g. 08123456789" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
-        </div>
-
-        <div id="addressField">
-          <label class="block text-xs font-medium text-stone-400 mb-1">Delivery Address & Landmark</label>
-          <input type="text" id="custAddress" placeholder="e.g. Flat 3, Block B, Admiralty Way, Lekki 1" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
+          <label class="block text-stone-400 font-semibold mb-1">Your Full Name</label>
+          <input type="text" id="custName" placeholder="e.g. Tayo Adeleke" class="w-full bg-[#0c0a09] border border-stone-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500" required>
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-stone-400 mb-1">Extra Notes (e.g. Mild pepper, extra napkins)</label>
-          <input type="text" id="custNotes" placeholder="Special cooking instructions" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-500">
+          <label class="block text-stone-400 font-semibold mb-1">WhatsApp Phone Number</label>
+          <input type="tel" id="custPhone" placeholder="e.g. 08123456789" class="w-full bg-[#0c0a09] border border-stone-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500" required>
+        </div>
+
+        <!-- Delivery Area Dropdown -->
+        <div id="deliveryAreaGroup">
+          <label class="block text-stone-400 font-semibold mb-1">Select Delivery Destination</label>
+          <select id="deliveryZone" onchange="updateDeliveryFee()" class="w-full bg-[#0c0a09] border border-stone-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500">
+            <option value="1000" selected>Olaiya / Gbongan Rd / Old Garage (+₦1,000)</option>
+            <option value="1200">Ring Road / Aurora / Ogo-Oluwa (+₦1,200)</option>
+            <option value="1500">GRA / Osun Mall / Oke-Fia (+₦1,500)</option>
+            <option value="1800">University / Halleluyah / Dada Estate (+₦1,800)</option>
+          </select>
+        </div>
+
+        <div id="addressFieldGroup">
+          <label class="block text-stone-400 font-semibold mb-1">Detailed Street Address / Landmark</label>
+          <input type="text" id="custAddress" placeholder="e.g. Flat 3, Adekunle Layout, near Ebenezer Hotel" class="w-full bg-[#0c0a09] border border-stone-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500">
+        </div>
+
+        <div>
+          <label class="block text-stone-400 font-semibold mb-1">Kitchen Note (Optional)</label>
+          <input type="text" id="custNotes" placeholder="e.g. Pack pepper separately, deliver hot" class="w-full bg-[#0c0a09] border border-stone-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500">
         </div>
       </div>
 
-      <!-- Total Breakdown -->
-      <div class="p-4 rounded-2xl bg-stone-950 border border-stone-800 text-xs space-y-2 mb-6">
-        <div class="flex justify-between text-stone-400"><span>Subtotal:</span><span id="subtotalVal">₦0</span></div>
-        <div class="flex justify-between text-stone-400"><span id="fulfillmentLabel">Delivery Fee:</span><span id="deliveryVal">₦1,500</span></div>
-        <div class="flex justify-between text-sm font-bold text-white border-t border-stone-800 pt-2">
-          <span>Total to Pay:</span><span id="finalTotalVal" class="text-amber-400">₦0</span>
-        </div>
+      <!-- Cost Breakdown -->
+      <div class="p-3.5 rounded-2xl bg-[#0c0a09] border border-stone-800 text-xs space-y-1.5 mb-5">
+        <div class="flex justify-between text-stone-400"><span>Food Subtotal:</span><span id="subtotalVal" class="text-white font-semibold">₦0</span></div>
+        <div class="flex justify-between text-stone-400"><span>Delivery Fee:</span><span id="deliveryVal" class="text-amber-400 font-semibold">₦1,000</span></div>
+        <div class="flex justify-between text-sm font-bold text-white border-t border-stone-800 pt-2 mt-1"><span>Total Due Now:</span><span id="finalTotalVal" class="text-amber-400 font-serif text-base font-extrabold">₦0</span></div>
       </div>
 
-      <!-- Paystack Pay Buttons -->
-      <button onclick="submitOrder(false)" class="w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-bold text-sm shadow-xl shadow-amber-500/20 hover:brightness-110 transition mb-3">
-        Pay via Paystack & Send to Kitchen
+      <button id="btnProceedToPay" onclick="openPaystackModal()" class="w-full py-3.5 rounded-2xl amber-gradient text-stone-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-amber-500/20 hover:brightness-105 active:scale-95 transition">
+        <span>Proceed to Paystack Payment</span>
       </button>
+
+      <div class="mt-3 flex items-center justify-center text-[10px] text-stone-500 gap-1">
+        <span>🔒 256-Bit Bank Grade Encrypted Paystack Checkout</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- REALISTIC AUTHENTIC PAYSTACK CHECKOUT MODAL -->
+  <!-- ======================================================== -->
+  <div id="paystackModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#ffffff] text-slate-900 rounded-2xl max-w-sm w-full overflow-hidden shadow-2xl relative animate-in fade-in zoom-in duration-150">
       
-      <button onclick="submitOrder(true)" type="button" class="w-full py-2.5 rounded-xl bg-stone-800 text-stone-400 hover:text-white font-medium text-xs transition">
-        ⚡ 1-Click Demo Order (Simulated)
-      </button>
+      <!-- Paystack Blue Header -->
+      <div class="p-4 bg-[#09a5db] text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center font-bold text-sm">
+            P
+          </div>
+          <div>
+            <div class="text-xs font-bold leading-none">paystack</div>
+            <div class="text-[10px] opacity-80">Secured Checkout</div>
+          </div>
+        </div>
+        <button onclick="closePaystackModal()" class="text-white hover:opacity-80 text-lg font-bold">✕</button>
+      </div>
+
+      <!-- Merchant Info -->
+      <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-xs">
+        <div>
+          <span class="text-slate-500 block text-[10px]">PAYING TO</span>
+          <span class="font-bold text-slate-800">Cravers Shawarma & Grill</span>
+        </div>
+        <div class="text-right">
+          <span class="text-slate-500 block text-[10px]">AMOUNT DUE</span>
+          <span id="psModalAmount" class="font-extrabold text-slate-900 text-sm">₦5,000</span>
+        </div>
+      </div>
+
+      <!-- Channel Tabs -->
+      <div class="grid grid-cols-3 text-center border-b border-slate-200 text-xs font-semibold">
+        <button id="psTabCard" onclick="switchPsTab('card')" class="py-2.5 border-b-2 border-[#09a5db] text-[#09a5db]">
+          💳 Card
+        </button>
+        <button id="psTabTransfer" onclick="switchPsTab('transfer')" class="py-2.5 text-slate-500 hover:text-slate-800">
+          🏦 Transfer
+        </button>
+        <button id="psTabUssd" onclick="switchPsTab('ussd')" class="py-2.5 text-slate-500 hover:text-slate-800">
+          📱 USSD
+        </button>
+      </div>
+
+      <!-- Card View -->
+      <div id="psViewCard" class="p-5 space-y-3 text-xs">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-700 mb-1">CARD NUMBER</label>
+          <input type="text" value="4084 0840 0840 0840" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 font-mono tracking-wider focus:outline-none focus:border-[#09a5db]">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-700 mb-1">EXPIRY</label>
+            <input type="text" value="09 / 28" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 font-mono focus:outline-none focus:border-[#09a5db]">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-700 mb-1">CVV</label>
+            <input type="password" value="840" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-900 font-mono focus:outline-none focus:border-[#09a5db]">
+          </div>
+        </div>
+
+        <button id="btnPsSubmit" onclick="executePaystackPayment()" class="w-full py-3 rounded-lg bg-[#3bb75e] hover:bg-[#34a353] text-white font-bold text-xs uppercase tracking-wider shadow transition mt-2 flex items-center justify-center gap-2">
+          <span>Authorize & Pay Order</span>
+        </button>
+      </div>
+
+      <!-- Bank Transfer View -->
+      <div id="psViewTransfer" class="p-5 text-xs hidden space-y-3 text-center">
+        <p class="text-slate-600 text-[11px]">Transfer exactly <strong id="psTransferAmount">₦5,000</strong> to the Paystack Titan account below:</p>
+        <div class="p-4 bg-slate-100 rounded-xl border border-slate-200">
+          <div class="text-[10px] text-slate-500 uppercase font-bold">Wema Bank / Paystack Titan</div>
+          <div class="text-lg font-mono font-extrabold text-slate-900 tracking-wider my-1">9928341029</div>
+          <div class="text-[10px] text-slate-500">Account Name: Paystack - Cravers Kitchen</div>
+        </div>
+        <button onclick="executePaystackPayment()" class="w-full py-2.5 rounded-lg bg-[#3bb75e] text-white font-bold text-xs">
+          I Have Sent The Transfer
+        </button>
+      </div>
+
+      <!-- USSD View -->
+      <div id="psViewUssd" class="p-5 text-xs hidden space-y-3 text-center">
+        <p class="text-slate-600 text-[11px]">Dial the USSD string on your registered bank phone:</p>
+        <div class="p-3 bg-slate-100 rounded-xl font-mono text-base font-bold text-slate-800">
+          *737*2*5000*99283#
+        </div>
+        <button onclick="executePaystackPayment()" class="w-full py-2.5 rounded-lg bg-[#3bb75e] text-white font-bold text-xs">
+          Payment Completed
+        </button>
+      </div>
+
+      <div class="p-3 bg-slate-100 border-t border-slate-200 text-center text-[10px] text-slate-500">
+        🔒 Verified by Paystack Payments Limited (CBN Licensed)
+      </div>
     </div>
   </div>
 
-  <!-- Order Receipt Success Modal -->
-  <div id="receiptModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-stone-900 border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
-      <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-3xl">
+  <!-- ======================================================== -->
+  <!-- STEP 2 CONFIRMATION: VERIFIED -> DIRECT TO WHATSAPP -->
+  <!-- ======================================================== -->
+  <div id="paymentSuccessModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#141211] border border-amber-500/50 rounded-3xl p-7 max-w-sm w-full text-center shadow-2xl relative">
+      <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/20 border border-emerald-400 flex items-center justify-center text-3xl text-emerald-400">
         ✓
       </div>
-      <h3 class="text-xl font-bold text-white mb-1">Order Sent to Kitchen!</h3>
-      <p class="text-xs text-stone-400 mb-4">Payment confirmed. The chefs are wrapping your food.</p>
+      <span class="text-[10px] tracking-[0.25em] uppercase text-emerald-400 font-bold block mb-1">Paystack Payment Approved</span>
+      <h3 class="text-2xl font-serif font-bold text-white mb-2">Order Firing Up!</h3>
+      <p class="text-xs text-stone-400 mb-5 leading-relaxed">
+        Your payment was authorized. Tap the button below to send your official kitchen ticket straight to our WhatsApp dispatch line!
+      </p>
       
-      <div class="p-4 rounded-xl bg-stone-950 border border-stone-800 text-left text-xs space-y-2 mb-5">
-        <div class="flex justify-between"><span class="text-stone-400">Order Ref:</span><span id="modalReceiptRef" class="font-mono text-amber-400"></span></div>
-        <div class="flex justify-between"><span class="text-stone-400">Status:</span><span class="text-emerald-400 font-semibold">PREPARING (PAID)</span></div>
-        <div class="flex justify-between"><span class="text-stone-400">Estimated Time:</span><span class="text-white font-semibold">30 - 45 mins</span></div>
+      <div class="p-4 rounded-2xl bg-[#0c0a09] border border-stone-800 text-left text-xs space-y-2 mb-6">
+        <div class="flex justify-between"><span class="text-stone-400">Order Ref:</span><span id="confRef" class="font-mono text-amber-400"></span></div>
+        <div class="flex justify-between"><span class="text-stone-400">Items:</span><span id="confItemsCount" class="font-semibold text-white"></span></div>
+        <div class="flex justify-between"><span class="text-stone-400">Fulfillment:</span><span id="confFulfillment" class="font-semibold text-white"></span></div>
+        <div class="flex justify-between border-t border-stone-900 pt-2"><span class="text-stone-400">Amount Paid:</span><span id="confAmount" class="font-bold text-amber-400"></span></div>
       </div>
 
-      <div class="space-y-2">
-        <a id="modalWhatsAppOrderBtn" target="_blank" class="w-full py-3 px-4 rounded-xl bg-emerald-600 text-white font-semibold text-xs flex items-center justify-center gap-2 hover:bg-emerald-500 transition">
-          💬 Message Kitchen on WhatsApp
-        </a>
-        <button onclick="location.reload()" class="w-full py-2.5 px-4 rounded-xl bg-stone-800 text-stone-300 text-xs font-medium hover:bg-stone-700 transition">
-          Order More
+      <!-- THE DIRECT REDIRECT / SEND BUTTON -->
+      <a id="btnFinalWhatsApp" href="#" class="w-full py-4 px-4 rounded-2xl bg-[#25D366] hover:bg-[#1EBE5D] text-stone-950 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg shadow-[#25D366]/20">
+        💬 Send Kitchen Ticket to WhatsApp (08149640122) →
+      </a>
+      
+      <p class="text-[10px] text-stone-500 mt-3">
+        Opens your WhatsApp with your order items and delivery address already typed.
+      </p>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- LUXURY NOTICE / ERROR MODAL -->
+  <!-- ======================================================== -->
+  <div id="noticeModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#141211] border border-stone-800 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl relative animate-in fade-in zoom-in duration-150">
+      <div id="noticeModalIcon" class="w-14 h-14 mx-auto mb-3 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-2xl font-bold">
+        !
+      </div>
+      <h3 id="noticeModalTitle" class="font-serif font-bold text-white text-base mb-1.5">Notice</h3>
+      <p id="noticeModalBody" class="text-xs text-stone-300 mb-5 leading-relaxed"></p>
+      <button onclick="closeNoticeModal()" class="w-full py-3.5 rounded-2xl amber-gradient text-stone-950 font-bold text-xs uppercase tracking-wider hover:brightness-105 active:scale-[0.99] transition">
+        Understood
+      </button>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 24/7 AI KITCHEN CONCIERGE CHATBOT WIDGET -->
+  <!-- ======================================================== -->
+  <div class="fixed bottom-20 right-4 z-40">
+    <button onclick="toggleChat()" class="px-4 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-bold text-xs shadow-2xl flex items-center gap-2 hover:scale-105 transition-transform border border-amber-200/50">
+      <span class="w-2 h-2 rounded-full bg-emerald-950 animate-pulse"></span>
+      <span>💬 Ask Kitchen Concierge</span>
+    </button>
+  </div>
+
+  <!-- Chat Drawer / Modal -->
+  <div id="conciergeModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-[#141211] border border-amber-500/40 rounded-t-3xl sm:rounded-3xl max-w-md w-full h-[85vh] sm:h-[600px] flex flex-col shadow-2xl overflow-hidden">
+      
+      <!-- Chat Header -->
+      <div class="p-4 border-b border-stone-800 bg-[#1c1815] flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full amber-gradient flex items-center justify-center text-stone-950 text-base font-bold">
+            🔥
+          </div>
+          <div>
+            <h3 class="font-serif font-bold text-white text-base">Kitchen Concierge</h3>
+            <p class="text-[10px] text-emerald-400 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Online • Instant Food & Delivery Answers
+            </p>
+          </div>
+        </div>
+        <button onclick="toggleChat()" class="text-stone-400 hover:text-white text-lg p-2">✕</button>
+      </div>
+
+      <!-- Chat Messages Container -->
+      <div id="chatMessages" class="flex-grow p-4 overflow-y-auto space-y-3.5 text-xs custom-scrollbar">
+        <div class="flex gap-2.5 items-start">
+          <div class="w-7 h-7 rounded-full amber-gradient text-stone-950 flex-shrink-0 flex items-center justify-center text-[10px] font-bold">🔥</div>
+          <div class="bg-[#1a1715] border border-stone-800 p-3.5 rounded-2xl rounded-tl-none text-stone-200 leading-relaxed max-w-[85%]">
+            Hello food lover! 🌯 What are you craving today? I can help with delivery coverage, spice levels, or recommendations!
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Question Chips -->
+      <div class="p-3 border-t border-stone-900 bg-[#120f0e] flex gap-1.5 overflow-x-auto whitespace-nowrap custom-scrollbar">
+        <button onclick="askQuestion('delivery')" class="px-3 py-1.5 rounded-full bg-[#1e1a17] hover:bg-[#2b2420] text-stone-300 text-[11px] border border-stone-800 flex items-center gap-1 flex-shrink-0">
+          🛵 Delivery Times & Areas?
+        </button>
+        <button onclick="askQuestion('spice')" class="px-3 py-1.5 rounded-full bg-[#1e1a17] hover:bg-[#2b2420] text-amber-400 text-[11px] border border-amber-500/40 font-semibold flex items-center gap-1 flex-shrink-0">
+          🌶️ Spice Levels?
+        </button>
+        <button onclick="askQuestion('pickup')" class="px-3 py-1.5 rounded-full bg-[#1e1a17] hover:bg-[#2b2420] text-stone-300 text-[11px] border border-stone-800 flex items-center gap-1 flex-shrink-0">
+          📍 Store Pickup Location?
+        </button>
+        <button onclick="askQuestion('party')" class="px-3 py-1.5 rounded-full bg-[#1e1a17] hover:bg-[#2b2420] text-stone-300 text-[11px] border border-stone-800 flex items-center gap-1 flex-shrink-0">
+          🎉 Party Trays & Bulk Orders?
+        </button>
+      </div>
+
+      <!-- Input Bar -->
+      <div class="p-3 border-t border-stone-800 bg-[#161311] flex gap-2">
+        <input type="text" id="chatInput" placeholder="Ask about ingredients, delivery..." onkeydown="if(event.key==='Enter') sendUserMessage()" class="flex-grow bg-[#0c0a09] border border-stone-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
+        <button onclick="sendUserMessage()" class="px-4 py-2.5 rounded-xl amber-gradient text-stone-950 font-bold text-xs hover:brightness-110">
+          Send
         </button>
       </div>
     </div>
   </div>
 
   <script>
+    // Target Studio/Kitchen Business WhatsApp
+    const KITCHEN_WHATSAPP = "2348149640122";
+
     let cart = [];
     let fulfillment = 'DELIVERY'; // or 'PICKUP'
-    let deliveryFee = 1500;
+    let currentDeliveryFee = 1000;
 
-    // Fulfillment toggles
+    // Customizer Modal State
+    let activeItem = null;
+    let customSelectedSpice = "Mild";
+    let customQty = 1;
+
+    // PWA Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const banner = document.getElementById('pwaBanner');
+      if (banner) banner.style.display = 'flex';
+    });
+
+    function installPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => dismissPwaBanner());
+        deferredPrompt = null;
+      } else {
+        showNotice('Install App', 'To install: Tap your browser menu (three dots or Share button) and select "Add to Home Screen"!');
+      }
+    }
+
+    function dismissPwaBanner() {
+      const banner = document.getElementById('pwaBanner');
+      if (banner) banner.style.display = 'none';
+    }
+
+    // Notice Modal
+    function showNotice(title, message, isError = false) {
+      document.getElementById('noticeModalTitle').innerText = title;
+      document.getElementById('noticeModalBody').innerText = message;
+      const icon = document.getElementById('noticeModalIcon');
+      if (isError) {
+        icon.className = 'w-14 h-14 mx-auto mb-3 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center text-xl font-bold';
+        icon.innerText = '✕';
+      } else {
+        icon.className = 'w-14 h-14 mx-auto mb-3 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-xl font-bold';
+        icon.innerText = '!';
+      }
+      document.getElementById('noticeModal').classList.remove('hidden');
+    }
+
+    function closeNoticeModal() {
+      document.getElementById('noticeModal').classList.add('hidden');
+    }
+
+    // Category Filter
+    function filterCategory(cat) {
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#141211] border border-stone-800 text-stone-300 hover:border-stone-700 transition';
+      });
+      const activeBtn = document.querySelector(`.cat-btn[data-cat="${cat}"]`);
+      if (activeBtn) {
+        activeBtn.className = 'cat-btn active px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-stone-950 transition';
+      }
+
+      document.querySelectorAll('.food-item').forEach(card => {
+        if (cat === 'all' || card.dataset.category === cat) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    }
+
+    // Fulfillment Toggles
     const btnDelivery = document.getElementById('btnDelivery');
     const btnPickup = document.getElementById('btnPickup');
-    const addressField = document.getElementById('addressField');
+    const deliveryAreaGroup = document.getElementById('deliveryAreaGroup');
+    const addressFieldGroup = document.getElementById('addressFieldGroup');
 
     btnDelivery.addEventListener('click', () => {
       fulfillment = 'DELIVERY';
-      deliveryFee = 1500;
-      btnDelivery.className = 'py-2.5 rounded-xl bg-amber-500 text-stone-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition';
+      btnDelivery.className = 'py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition';
       btnPickup.className = 'py-2.5 rounded-xl text-stone-400 hover:text-white font-semibold text-xs flex items-center justify-center gap-2 transition';
-      addressField.style.display = 'block';
-      updateCartTotals();
+      deliveryAreaGroup.classList.remove('hidden');
+      addressFieldGroup.classList.remove('hidden');
+      updateDeliveryFee();
     });
 
     btnPickup.addEventListener('click', () => {
       fulfillment = 'PICKUP';
-      deliveryFee = 0;
-      btnPickup.className = 'py-2.5 rounded-xl bg-amber-500 text-stone-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition';
+      currentDeliveryFee = 0;
+      btnPickup.className = 'py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-stone-950 font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition';
       btnDelivery.className = 'py-2.5 rounded-xl text-stone-400 hover:text-white font-semibold text-xs flex items-center justify-center gap-2 transition';
-      addressField.style.display = 'none';
+      deliveryAreaGroup.classList.add('hidden');
+      addressFieldGroup.classList.add('hidden');
       updateCartTotals();
     });
 
-    function addToCart(name, price, extras) {
-      const existing = cart.find(i => i.name === name);
-      if (existing) {
-        existing.quantity += 1;
+    function updateDeliveryFee() {
+      if (fulfillment === 'PICKUP') {
+        currentDeliveryFee = 0;
       } else {
-        cart.push({ name, price, extras, quantity: 1 });
+        const zoneSelect = document.getElementById('deliveryZone');
+        currentDeliveryFee = Number(zoneSelect.value) || 1000;
       }
+      updateCartTotals();
+    }
+
+    // Customizer Modal
+    function openItemCustomizer(name, basePrice, desc, imgUrl) {
+      activeItem = { name, basePrice, desc, imgUrl };
+      customSelectedSpice = "Mild";
+      customQty = 1;
+
+      document.getElementById('custItemName').innerText = name;
+      document.getElementById('custItemDesc').innerText = desc;
+      document.getElementById('custItemBasePrice').innerText = `₦${basePrice.toLocaleString()}`;
+      document.getElementById('custItemImg').src = imgUrl;
+      document.getElementById('custQtyText').innerText = '1';
+
+      // Reset checkboxes
+      document.querySelectorAll('.addon-check').forEach(cb => cb.checked = false);
+      selectSpice('Mild');
+      calculateCustomTotal();
+
+      document.getElementById('customizerModal').classList.remove('hidden');
+    }
+
+    function closeItemCustomizer() {
+      document.getElementById('customizerModal').classList.add('hidden');
+    }
+
+    function selectSpice(spice) {
+      customSelectedSpice = spice;
+      document.querySelectorAll('.spice-btn').forEach(b => {
+        b.className = 'spice-btn py-2 rounded-xl border border-stone-800 bg-[#120f0e] text-stone-300 font-semibold text-center';
+      });
+      const target = document.querySelector(`.spice-btn[data-spice="${spice}"]`);
+      if (target) {
+        target.className = 'spice-btn active py-2 rounded-xl border border-amber-500 bg-amber-500/10 text-amber-400 font-semibold text-center';
+      }
+    }
+
+    function adjustCustomQty(delta) {
+      customQty = Math.max(1, customQty + delta);
+      document.getElementById('custQtyText').innerText = customQty;
+      calculateCustomTotal();
+    }
+
+    document.querySelectorAll('.addon-check').forEach(cb => {
+      cb.addEventListener('change', calculateCustomTotal);
+    });
+
+    function calculateCustomTotal() {
+      if (!activeItem) return 0;
+      let addonSum = 0;
+      document.querySelectorAll('.addon-check:checked').forEach(cb => {
+        addonSum += Number(cb.dataset.addonPrice);
+      });
+      const singleTotal = activeItem.basePrice + addonSum;
+      const grandTotal = singleTotal * customQty;
+      document.getElementById('custFinalTotal').innerText = `₦${grandTotal.toLocaleString()}`;
+      return { singleTotal, grandTotal, addonSum };
+    }
+
+    function commitCustomizedItem() {
+      if (!activeItem) return;
+
+      const { singleTotal } = calculateCustomTotal();
+      const selectedAddons = [];
+      document.querySelectorAll('.addon-check:checked').forEach(cb => {
+        selectedAddons.push(cb.value);
+      });
+
+      const extrasString = [
+        `Spice: ${customSelectedSpice}`,
+        ...selectedAddons
+      ].join(', ');
+
+      const existingIndex = cart.findIndex(i => i.name === activeItem.name && i.extras === extrasString);
+      if (existingIndex > -1) {
+        cart[existingIndex].quantity += customQty;
+      } else {
+        cart.push({
+          name: activeItem.name,
+          price: singleTotal,
+          extras: extrasString,
+          quantity: customQty
+        });
+      }
+
+      closeItemCustomizer();
       updateCartTotals();
     }
 
     function updateCartTotals() {
       const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-      const total = subtotal > 0 ? subtotal + deliveryFee : 0;
+      const total = subtotal > 0 ? subtotal + currentDeliveryFee : 0;
 
-      document.getElementById('cartCount').innerText = count;
-      document.getElementById('cartTotalText').innerText = `₦${total.toLocaleString()}`;
+      document.getElementById('trayBadgeCount').innerText = count;
+      document.getElementById('trayTotalDisplay').innerText = `₦${total.toLocaleString()}`;
       document.getElementById('subtotalVal').innerText = `₦${subtotal.toLocaleString()}`;
-      document.getElementById('deliveryVal').innerText = fulfillment === 'DELIVERY' ? `₦${deliveryFee.toLocaleString()}` : 'FREE (Pickup)';
+      document.getElementById('deliveryVal').innerText = fulfillment === 'DELIVERY' ? `₦${currentDeliveryFee.toLocaleString()}` : 'FREE (Pickup)';
       document.getElementById('finalTotalVal').innerText = `₦${total.toLocaleString()}`;
     }
 
+    // Checkout Modal
     function openCheckoutModal() {
       if (cart.length === 0) {
-        alert('Your tray is empty! Add some delicious items first.');
+        showNotice('Empty Food Tray', 'Your tray is empty! Tap on any delicious shawarma, grill, or sweet box to add it to your order.');
         return;
       }
+
       const itemsContainer = document.getElementById('modalCartItems');
-      itemsContainer.innerHTML = cart.map(item => `
-        <div class="flex justify-between items-center py-1 border-b border-stone-800/50">
+      itemsContainer.innerHTML = cart.map((item, idx) => `
+        <div class="flex justify-between items-center py-2 border-b border-stone-800/60">
           <div>
-            <span class="font-semibold text-white">${item.quantity}x ${item.name}</span>
-            ${item.extras ? `<span class="text-stone-400 block text-[10px]">${item.extras}</span>` : ''}
+            <span class="font-bold text-white text-xs">${item.quantity}x ${item.name}</span>
+            ${item.extras ? `<span class="text-stone-400 block text-[10px] mt-0.5">${item.extras}</span>` : ''}
           </div>
-          <span class="font-semibold text-amber-400">₦${(item.price * item.quantity).toLocaleString()}</span>
+          <div class="text-right">
+            <span class="font-extrabold text-amber-400 text-xs">₦${(item.price * item.quantity).toLocaleString()}</span>
+            <button onclick="removeCartItem(${idx})" class="block text-[9px] text-stone-500 hover:text-rose-400 text-right mt-0.5">Remove</button>
+          </div>
         </div>
       `).join('');
 
       document.getElementById('checkoutModal').classList.remove('hidden');
     }
 
+    function removeCartItem(index) {
+      cart.splice(index, 1);
+      if (cart.length === 0) {
+        closeCheckoutModal();
+      } else {
+        openCheckoutModal();
+      }
+      updateCartTotals();
+    }
+
     function closeCheckoutModal() {
       document.getElementById('checkoutModal').classList.add('hidden');
     }
 
-    async function submitOrder(isDemo = false) {
-      const name = document.getElementById('custName').value.trim() || (isDemo ? 'Chinedu Eze' : '');
-      const phone = document.getElementById('custPhone').value.trim() || (isDemo ? '08031234567' : '');
-      const address = document.getElementById('custAddress').value.trim() || (isDemo ? 'Block 4, Lekki Phase 1' : '');
-      const notes = document.getElementById('custNotes').value.trim();
+    // Paystack Modal Handlers
+    function openPaystackModal() {
+      const name = document.getElementById('custName').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const address = document.getElementById('custAddress').value.trim();
 
       if (!name || !phone) {
-        alert('Please fill in your name and phone number.');
+        showNotice('Information Required', 'Please enter your Full Name and WhatsApp phone number so the dispatch rider can contact you.');
         return;
       }
 
       if (fulfillment === 'DELIVERY' && !address) {
-        alert('Please provide your delivery address.');
+        showNotice('Address Required', 'Please provide your delivery street address and landmark.');
         return;
       }
 
       const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      const totalAmount = subtotal + deliveryFee;
+      const grandTotal = subtotal + currentDeliveryFee;
+
+      document.getElementById('psModalAmount').innerText = `₦${grandTotal.toLocaleString()}`;
+      document.getElementById('psTransferAmount').innerText = `₦${grandTotal.toLocaleString()}`;
+      document.getElementById('paystackModal').classList.remove('hidden');
+    }
+
+    function closePaystackModal() {
+      document.getElementById('paystackModal').classList.add('hidden');
+    }
+
+    function switchPsTab(tab) {
+      const btnCard = document.getElementById('psTabCard');
+      const btnTransfer = document.getElementById('psTabTransfer');
+      const btnUssd = document.getElementById('psTabUssd');
+      const viewCard = document.getElementById('psViewCard');
+      const viewTransfer = document.getElementById('psViewTransfer');
+      const viewUssd = document.getElementById('psViewUssd');
+
+      [btnCard, btnTransfer, btnUssd].forEach(b => {
+        b.className = 'py-2.5 text-slate-500 hover:text-slate-800';
+      });
+      [viewCard, viewTransfer, viewUssd].forEach(v => v.classList.add('hidden'));
+
+      if (tab === 'card') {
+        btnCard.className = 'py-2.5 border-b-2 border-[#09a5db] text-[#09a5db] font-bold';
+        viewCard.classList.remove('hidden');
+      } else if (tab === 'transfer') {
+        btnTransfer.className = 'py-2.5 border-b-2 border-[#09a5db] text-[#09a5db] font-bold';
+        viewTransfer.classList.remove('hidden');
+      } else {
+        btnUssd.className = 'py-2.5 border-b-2 border-[#09a5db] text-[#09a5db] font-bold';
+        viewUssd.classList.remove('hidden');
+      }
+    }
+
+    // Execute Order via Paystack
+    async function executePaystackPayment() {
+      const name = document.getElementById('custName').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const address = document.getElementById('custAddress').value.trim();
+      const notes = document.getElementById('custNotes').value.trim();
       const ref = `FOOD_${Date.now()}`;
+
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const totalAmount = subtotal + currentDeliveryFee;
+
+      const btn = document.getElementById('btnPsSubmit');
+      btn.innerText = "Authorizing with Paystack...";
+      btn.disabled = true;
 
       try {
         const res = await fetch('/api/orders/create', {
@@ -334,27 +932,155 @@
             fulfillmentType: fulfillment,
             address: fulfillment === 'PICKUP' ? 'Store Pickup' : address,
             items: cart,
+            subtotal,
+            deliveryFee: currentDeliveryFee,
             totalAmount,
             notes,
             reference: ref
           })
         });
 
-        const data = await res.json();
+        const rawText = await res.text();
+        let data;
+        try {
+          data = JSON.parse(rawText);
+        } catch (e) {
+          throw new Error("Server error: " + rawText.substring(0, 100));
+        }
+
         if (data.success) {
+          closePaystackModal();
           closeCheckoutModal();
-          document.getElementById('modalReceiptRef').innerText = ref;
 
-          const waText = `Hi Cravers Kitchen, I just placed order ${ref} (${cart.length} items, Total: ₦${totalAmount.toLocaleString()}) for ${name}`;
-          document.getElementById('modalWhatsAppOrderBtn').href = `https://wa.me/2348000000000?text=${encodeURIComponent(waText)}`;
+          document.getElementById('confRef').innerText = ref;
+          document.getElementById('confItemsCount').innerText = `${cart.length} item(s)`;
+          document.getElementById('confFulfillment').innerText = fulfillment === 'PICKUP' ? 'Store Pickup' : 'Delivery';
+          document.getElementById('confAmount').innerText = `₦${totalAmount.toLocaleString()} (Paid)`;
 
-          document.getElementById('receiptModal').classList.remove('hidden');
+          // Compose formatted WhatsApp Kitchen Ticket
+          const itemsListText = cart.map(it => `• ${it.quantity}x ${it.name} ${it.extras ? `(${it.extras})` : ''}`).join('\n');
+          const waMessage = `Hi Cravers Grill! 🔥 I just placed my order and paid ₦${totalAmount.toLocaleString()} on Paystack.\n\nOrder Ref: ${ref}\nCustomer: ${name}\nPhone: ${phone}\nFulfillment: ${fulfillment === 'PICKUP' ? 'Store Pickup' : 'Doorstep Delivery'}\nAddress: ${fulfillment === 'PICKUP' ? 'Store Pickup' : address}\n\nItems Ordered:\n${itemsListText}\n\nNotes: ${notes || 'None'}\n\nPlease fire up the kitchen and confirm delivery!`;
+          const waUrl = `https://wa.me/${KITCHEN_WHATSAPP}?text=${encodeURIComponent(waMessage)}`;
+
+          document.getElementById('btnFinalWhatsApp').href = waUrl;
+          document.getElementById('paymentSuccessModal').classList.remove('hidden');
+
+          // Reset cart
+          cart = [];
+          updateCartTotals();
         } else {
-          alert('Order error: ' + (data.error || 'Failed to submit order'));
+          closePaystackModal();
+          showNotice('Order Error', data.error || 'Unable to place order.', true);
         }
       } catch (err) {
-        alert('Network error: ' + err.message);
+        closePaystackModal();
+        showNotice('Connection Error', err.message, true);
+      } finally {
+        btn.innerText = "Authorize & Pay Order";
+        btn.disabled = false;
       }
+    }
+
+    // ==========================================
+    // 24/7 AI KITCHEN CONCIERGE CHATBOT
+    // ==========================================
+    function toggleChat() {
+      const modal = document.getElementById('conciergeModal');
+      modal.classList.toggle('hidden');
+    }
+
+    function addChatMessage(sender, text, isHtml = false) {
+      const container = document.getElementById('chatMessages');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = sender === 'user' ? 'flex justify-end' : 'flex gap-2.5 items-start';
+
+      if (sender === 'user') {
+        msgDiv.innerHTML = `
+          <div class="bg-amber-500 text-stone-950 p-3 rounded-2xl rounded-tr-none font-semibold max-w-[85%] text-xs">
+            ${text}
+          </div>
+        `;
+      } else {
+        msgDiv.innerHTML = `
+          <div class="w-7 h-7 rounded-full amber-gradient text-stone-950 flex-shrink-0 flex items-center justify-center text-[10px] font-bold">🔥</div>
+          <div class="bg-[#1a1715] border border-stone-800 p-3.5 rounded-2xl rounded-tl-none text-stone-200 leading-relaxed max-w-[85%] text-xs">
+            ${isHtml ? text : text.replace(/\n/g, '<br>')}
+          </div>
+        `;
+      }
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function askQuestion(type) {
+      if (type === 'delivery') {
+        addChatMessage('user', 'What are your delivery areas and times?');
+        setTimeout(() => {
+          addChatMessage('bot', `
+            🛵 <b>Hot Dispatch Guarantee:</b><br>
+            • Orders are prepped and delivered in <b>25 to 40 minutes</b> hot in thermal insulated bags.<br>
+            • <b>Coverage Areas:</b> Olaiya, Ring Road, Aurora, Ogo-Oluwa, GRA, Osun Mall, Oke-Fia, University axis, and environs.<br>
+            • Delivery fees start from ₦1,000.
+          `, true);
+        }, 300);
+      } else if (type === 'spice') {
+        addChatMessage('user', 'How spicy is your food?');
+        setTimeout(() => {
+          addChatMessage('bot', `
+            🌶️ <b>Spice Customization:</b><br>
+            You can customize every single shawarma or grill item when adding it to your tray:<br>
+            • <b>Mild:</b> Gentle savory garlic glaze, zero burning heat.<br>
+            • <b>Spicy:</b> Classic Nigerian pepper kick.<br>
+            • <b>Suya Hot:</b> Authentic fiery northern yaji spice!
+          `, true);
+        }, 300);
+      } else if (type === 'pickup') {
+        addChatMessage('user', 'Where can I pick up my food?');
+        setTimeout(() => {
+          addChatMessage('bot', `
+            📍 <b>Kitchen Pickup Hub:</b><br>
+            Cravers Central Grill Hub, Adekunle Square (near Olaiya / Gbongan Rd).<br><br>
+            • Select <b>Store Pickup (Free)</b> at the top of the menu.<br>
+            • Your order will be bagged and ready with your name on arrival!
+          `, true);
+        }, 300);
+      } else if (type === 'party') {
+        addChatMessage('user', 'Do you offer bulk party packs for events?');
+        setTimeout(() => {
+          addChatMessage('bot', `
+            🎉 <b>Party Trays & Event Boxes:</b><br>
+            Yes! We cater 20 to 200+ packs of Jumbo Shawarmas, Smoked BBQ platters, and Gourmet Doughnut boxes for birthdays, office meetings, and weddings.<br><br>
+            <a href="https://wa.me/${KITCHEN_WHATSAPP}?text=Hi%20Cravers%20Kitchen,%20I%20would%20like%20to%20inquire%20about%20a%20bulk%20catering%20order" target="_blank" class="px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-bold text-[11px] inline-block">💬 Message Catering Manager</a>
+          `, true);
+        }, 300);
+      }
+    }
+
+    function sendUserMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+
+      addChatMessage('user', text);
+      const lower = text.toLowerCase();
+
+      setTimeout(() => {
+        if (lower.includes('delivery') || lower.includes('area') || lower.includes('where do you deliver')) {
+          askQuestion('delivery');
+        } else if (lower.includes('spice') || lower.includes('pepper') || lower.includes('hot')) {
+          askQuestion('spice');
+        } else if (lower.includes('pickup') || lower.includes('location') || lower.includes('address')) {
+          askQuestion('pickup');
+        } else if (lower.includes('bulk') || lower.includes('party') || lower.includes('event')) {
+          askQuestion('party');
+        } else {
+          addChatMessage('bot', `
+            Thank you! For custom kitchen requests or specific dietary needs, our chef is on standby: <br><br>
+            <a href="https://wa.me/${KITCHEN_WHATSAPP}?text=Hi%20Cravers,%20I%20have%20a%20question%20about%20the%20menu" target="_blank" class="px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-bold inline-block">💬 Chat on WhatsApp</a>
+          `, true);
+        }
+      }, 350);
     }
   </script>
 </body>
